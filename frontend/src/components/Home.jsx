@@ -1,115 +1,96 @@
-import React, { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import AppContext from "../Context/Context";
-import Card from "../components/Card";
+import React, { useEffect, useState } from "react";
+import axios from "../axios";
+import Card from "./Card";
 import unplugged from "../assets/unplugged.png";
+import "./Home.css";
 
-const Home = ({ selectedCategory }) => {
-  const { data, isError, addToCart, refreshData } = useContext(AppContext);
+const Home = ({ selectedCategory, searchQuery }) => {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch products and images only when data is available
   useEffect(() => {
-    if (data && data.length > 0) {
-      const fetchImagesAndUpdateProducts = async () => {
-        const updatedProducts = await Promise.all(
-          data.map(async (product) => {
-            try {
-              const response = await axios.get(
-                `http://localhost:8080/api/product/${product.id}/image`,
-                { responseType: "blob" }
-              );
-              const imageUrl = URL.createObjectURL(response.data);
-              return { ...product, imageUrl };
-            } catch (error) {
-              console.error(
-                "Error fetching image for product ID:",
-                product.id,
-                error
-              );
-              return { ...product, imageUrl: unplugged }; // Fallback to placeholder image
-            }
-          })
-        );
-        setProducts(updatedProducts);
-        setFilteredProducts(updatedProducts); // Initially set all products as filtered
-      };
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get("/products");
+        setProducts(response.data);
+        setError(null);
+      } catch (err) {
+        setError("Failed to fetch products");
+        console.error("Error fetching products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-      fetchImagesAndUpdateProducts();
-    }
-  }, [data]);
+    fetchProducts();
+  }, []);
 
-  // Filter products by selected category
-  const filterProducts = (searchQuery) => {
-    let filtered = products;
-
+  // Filter products based on category and search query
+  const filteredProducts = products.filter(product => {
+    let matches = true;
+    
     if (selectedCategory) {
-      filtered = filtered.filter((product) => product.category === selectedCategory);
+      matches = matches && product.category === selectedCategory;
     }
-
+    
     if (searchQuery) {
-      filtered = filtered.filter((product) =>
-        product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.desc.toLowerCase().includes(searchQuery.toLowerCase())
+      const query = searchQuery.toLowerCase();
+      matches = matches && (
+        product.name.toLowerCase().includes(query) ||
+        product.brand.toLowerCase().includes(query) ||
+        product.category.toLowerCase().includes(query)
       );
     }
+    
+    return matches;
+  });
 
-    setFilteredProducts(filtered);
-  };
-
-  // Error handling
-  if (isError) {
+  if (loading) {
     return (
-      <h2 className="text-center" style={{ padding: "18rem" }}>
-        <img src={unplugged} alt="Error" style={{ width: "6rem", height: "6rem" }} />
-        <p>There was an error fetching products.</p>
-      </h2>
+      <div className="loading-container">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
     );
   }
 
-  // Loading or empty state
-  if (!data || products.length === 0) {
+  if (error) {
     return (
-      <div className="text-center" style={{ marginTop: "4rem" }}>
-        <img src={unplugged} alt="No Products" style={{ width: "6rem", height: "6rem" }} />
-        <p>No Products Available</p>
+      <div className="error-container">
+        <img src={unplugged} alt="Error" className="error-image" />
+        <p className="error-message">{error}</p>
       </div>
     );
   }
 
   return (
-    <>
-      <div
-        className="grid"
-        style={{
-          marginTop: "4rem",
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(16rem, 1fr))",
-          gap: "2rem",
-          padding: "2rem",
-        }}
-      >
+    <div className="home-container">
+      {selectedCategory && (
+        <div className="category-header">
+          <h1 className="category-title">{selectedCategory}</h1>
+          <p className="category-count">{filteredProducts.length} products found</p>
+        </div>
+      )}
+
+      <div className="products-section">
         {filteredProducts.length === 0 ? (
-          <h2
-            className="text-center"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              fontSize: "1.5rem",
-            }}
-          >
-            No Products Available
-          </h2>
+          <div className="no-products">
+            <img src={unplugged} alt="No Products" />
+            <h2>No Products Found</h2>
+            <p>Try adjusting your search or filters</p>
+          </div>
         ) : (
-          filteredProducts.map((product) => (
-            <Card key={product.id} product={product} addToCart={addToCart} />
-          ))
+          <div className="products-grid">
+            {filteredProducts.map((product) => (
+              <Card key={product.id} product={product} />
+            ))}
+          </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

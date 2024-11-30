@@ -3,11 +3,11 @@ import { useContext, useEffect } from "react";
 import { useState } from "react";
 import AppContext from "../Context/Context";
 import axios from "../axios";
-import UpdateProduct from "./UpdateProduct";
+import unplugged from "../assets/unplugged.png";
+
 const Product = () => {
   const { id } = useParams();
-  const { data, addToCart, removeFromCart, cart, refreshData } =
-    useContext(AppContext);
+  const { data, addToCart, removeFromCart, cart, refreshData } = useContext(AppContext);
   const [product, setProduct] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
   const navigate = useNavigate();
@@ -15,9 +15,7 @@ const Product = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:8080/api/product/${id}`
-        );
+        const response = await axios.get(`http://localhost:8080/api/product/${id}`);
         setProduct(response.data);
         if (response.data.imageName) {
           fetchImage();
@@ -28,11 +26,15 @@ const Product = () => {
     };
 
     const fetchImage = async () => {
-      const response = await axios.get(
-        `http://localhost:8080/api/product/${id}/image`,
-        { responseType: "blob" }
-      );
-      setImageUrl(URL.createObjectURL(response.data));
+      try {
+        const response = await axios.get(
+          `http://localhost:8080/api/product/${id}/image`,
+          { responseType: "blob" }
+        );
+        setImageUrl(URL.createObjectURL(response.data));
+      } catch (error) {
+        setImageUrl(unplugged);
+      }
     };
 
     fetchProduct();
@@ -42,12 +44,12 @@ const Product = () => {
     try {
       await axios.delete(`http://localhost:8080/api/product/${id}`);
       removeFromCart(id);
-      console.log("Product deleted successfully");
-      alert("Product deleted successfully");
       refreshData();
       navigate("/");
+      alert("Product deleted successfully");
     } catch (error) {
       console.error("Error deleting product:", error);
+      alert("Error deleting product");
     }
   };
 
@@ -55,118 +57,92 @@ const Product = () => {
     navigate(`/product/update/${id}`);
   };
 
-  const handlAddToCart = () => {
-    addToCart(product);
-    alert("Product added to cart");
+  const handleAddToCart = () => {
+    if (product.available) {
+      addToCart(product);
+      alert("Product added to cart");
+    }
   };
+
   if (!product) {
     return (
-      <h2 className="text-center" style={{ padding: "10rem" }}>
-        Loading...
-      </h2>
+      <div className="loading-container">
+        <div className="spinner-border text-primary" role="status">
+          <span className="visually-hidden">Loading...</span>
+        </div>
+      </div>
     );
   }
-  return (
-    <>
-      <div className="containers" style={{ display: "flex" }}>
-        <img
-          className="left-column-img"
-          src={imageUrl}
-          alt={product.imageName}
-          style={{ width: "50%", height: "auto" }}
-        />
 
-        <div className="right-column" style={{ width: "50%" }}>
-          <div className="product-description">
-            <div style={{display:'flex',justifyContent:'space-between' }}>
-            <span style={{ fontSize: "1.2rem", fontWeight: 'lighter' }}>
-              {product.category}
-            </span>
-            <p className="release-date" style={{ marginBottom: "2rem" }}>
-              
-              <h6>Listed : <span> <i> {new Date(product.releaseDate).toLocaleDateString()}</i></span></h6>
-              {/* <i> {new Date(product.releaseDate).toLocaleDateString()}</i> */}
-            </p>
+  return (
+    <div className="product-detail-container">
+      <div className="product-detail-wrapper">
+        <div className="product-detail-image">
+          <img
+            src={imageUrl || unplugged}
+            alt={product.name}
+            onError={(e) => {
+              e.target.src = unplugged;
+              e.target.onerror = null;
+            }}
+          />
+        </div>
+
+        <div className="product-detail-info">
+          <div className="product-detail-header">
+            <div className="product-category-date">
+              <span className="product-category">{product.category}</span>
+              <span className="product-date">
+                Listed: {new Date(product.releaseDate).toLocaleDateString()}
+              </span>
             </div>
             
-           
-            <h1 style={{ fontSize: "2rem", marginBottom: "0.5rem",textTransform: 'capitalize', letterSpacing:'1px' }}>
-              {product.name}
-            </h1>
-            <i style={{ marginBottom: "3rem" }}>{product.brand}</i>
-            <p style={{fontWeight:'bold',fontSize:'1rem',margin:'10px 0px 0px'}}>PRODUCT DESCRIPTION :</p>
-            <p style={{ marginBottom: "1rem" }}>{product.description}</p>
+            <h1 className="product-detail-name">{product.name}</h1>
+            <span className="product-detail-brand">{product.brand}</span>
           </div>
 
-          <div className="product-price">
-            <span style={{ fontSize: "2rem", fontWeight: "bold" }}>
-              {"$" + product.price}
-            </span>
-            <button
-              className={`cart-btn ${
-                !product.productAvailable ? "disabled-btn" : ""
-              }`}
-              onClick={handlAddToCart}
-              disabled={!product.productAvailable}
-              style={{
-                padding: "1rem 2rem",
-                fontSize: "1rem",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-                marginBottom: "1rem",
-              }}
-            >
-              {product.productAvailable ? "Add to cart" : "Out of Stock"}
-            </button>
-            <h6 style={{ marginBottom: "1rem" }}>
-              Stock Available :{" "}
-              <i style={{ color: "green", fontWeight: "bold" }}>
-                {product.stockQuantity}
-              </i>
-            </h6>
-          
+          <div className="product-detail-description">
+            <h2>Product Description</h2>
+            <p>{product.description}</p>
           </div>
-          <div className="update-button" style={{ display: "flex", gap: "1rem" }}>
+
+          <div className="product-detail-price-stock">
+            <div className="price-stock-info">
+              <h2 className="product-detail-price">${product.price}</h2>
+              <span className={`stock-status ${product.available ? 'in-stock' : 'out-of-stock'}`}>
+                {product.available ? 'In Stock' : 'Out of Stock'}
+              </span>
+              <span className="stock-quantity">
+                Stock Available: {product.stockQuantity} units
+              </span>
+            </div>
+
             <button
-              className="btn btn-primary"
-              type="button"
-              onClick={handleEditClick}
-              style={{
-                padding: "1rem 2rem",
-                fontSize: "1rem",
-                backgroundColor: "#007bff",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
+              className={`add-to-cart-button ${!product.available ? 'disabled' : ''}`}
+              onClick={handleAddToCart}
+              disabled={!product.available}
             >
-              Update
+              {product.available ? 'Add to Cart' : 'Out of Stock'}
             </button>
-            {/* <UpdateProduct product={product} onUpdate={handleUpdate} /> */}
+          </div>
+
+          <div className="product-detail-actions">
             <button
-              className="btn btn-primary"
-              type="button"
-              onClick={deleteProduct}
-              style={{
-                padding: "1rem 2rem",
-                fontSize: "1rem",
-                backgroundColor: "#dc3545",
-                color: "white",
-                border: "none",
-                borderRadius: "5px",
-                cursor: "pointer",
-              }}
+              className="edit-button"
+              onClick={handleEditClick}
             >
-              Delete
+              <i className="bi bi-pencil"></i> Edit Product
+            </button>
+            <button
+              className="delete-button"
+              onClick={deleteProduct}
+            >
+              <i className="bi bi-trash"></i> Delete Product
             </button>
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

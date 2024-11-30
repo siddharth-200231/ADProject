@@ -16,6 +16,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -39,13 +40,12 @@ function App() {
   return (
     <AppProvider>
       <BrowserRouter>
-        <Navbar onSelectCategory={handleCategorySelect}
-         />
+        <Navbar onSelectCategory={handleCategorySelect} onSearch={setSearchQuery} />
         <Routes>
           <Route
             path="/"
             element={
-              <Home addToCart={addToCart} selectedCategory={selectedCategory}
+              <Home addToCart={addToCart} selectedCategory={selectedCategory} searchQuery={searchQuery}
               />
             }
           />
