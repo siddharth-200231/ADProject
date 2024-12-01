@@ -1,73 +1,60 @@
 import "./App.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Home from "./components/Home";
 import Navbar from "./components/Navbar";
 import Cart from "./components/Cart";
 import AddProduct from "./components/AddProduct";
 import Product from "./components/Product";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import { AppProvider } from "./Context/Context";
 import UpdateProduct from "./components/UpdateProduct";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min";
-import 'bootstrap/dist/css/bootstrap.min.css';
 import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { theme, darkTheme } from './theme';
-
+import { CssBaseline } from '@mui/material';
+import { getTheme } from './theme';
 
 function App() {
-  const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  const [mode, setMode] = useState('light');
+  const theme = useMemo(() => getTheme(mode), [mode]);
+
+  useEffect(() => {
+    document.body.className = mode === 'dark' ? 'dark-theme' : '';
+  }, [mode]);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
-    console.log("Selected category:", category);
   };
-  const addToCart = (product) => {
-    const existingProduct = cart.find((item) => item.id === product.id);
-    if (existingProduct) {
-      setCart(
-        cart.map((item) =>
-          item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
-      );
-    } else {
-      setCart([...cart, { ...product, quantity: 1 }]);
-    }
+
+  const toggleTheme = () => {
+    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : theme}>
-      <CssBaseline />
-      <AppProvider>
+    <div className={mode === 'dark' ? 'dark-theme' : ''}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
         <BrowserRouter>
           <Navbar 
             onSelectCategory={handleCategorySelect} 
             onSearch={setSearchQuery}
-            onThemeToggle={() => setIsDarkMode(!isDarkMode)}
+            onThemeToggle={toggleTheme}
+            isDarkMode={mode === 'dark'}
           />
           <Routes>
             <Route
               path="/"
               element={
-                <Home addToCart={addToCart} selectedCategory={selectedCategory} searchQuery={searchQuery}
-                />
+                <Home selectedCategory={selectedCategory} searchQuery={searchQuery} />
               }
             />
             <Route path="/add_product" element={<AddProduct />} />
-            <Route path="/product" element={<Product  />} />
-            <Route path="product/:id" element={<Product  />} />
+            <Route path="/product/:id" element={<Product />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/product/update/:id" element={<UpdateProduct />} />
           </Routes>
         </BrowserRouter>
-      </AppProvider>
-    </ThemeProvider>
+      </ThemeProvider>
+    </div>
   );
 }
 

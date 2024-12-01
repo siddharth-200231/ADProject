@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { 
   Card as MuiCard,
   CardMedia,
@@ -7,8 +7,9 @@ import {
   IconButton,
   Box,
   Chip,
-  Fade,
-  styled
+  Grid,
+  styled,
+  useTheme
 } from '@mui/material';
 import { 
   ShoppingCart, 
@@ -17,36 +18,50 @@ import {
   Cancel as CancelIcon 
 } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import AppContext from '../Context/Context';
 
 // Styled components
 const StyledCard = styled(MuiCard)(({ theme }) => ({
   height: '100%',
   position: 'relative',
   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-  background: 'linear-gradient(to bottom, #ffffff, #fafafa)',
-  borderRadius: '20px',
+  background: theme.palette.mode === 'dark'
+    ? 'linear-gradient(145deg, #1a2635 0%, #0d1b2a 100%)'
+    : 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
+  borderRadius: theme.breakpoints.down('sm') ? '12px' : '20px',
   overflow: 'hidden',
+  border: `1px solid ${theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.08)'}`,
   '&:hover': {
-    transform: 'translateY(-8px)',
-    boxShadow: '0 12px 30px rgba(0, 0, 0, 0.1)',
+    transform: theme.breakpoints.up('sm') ? 'translateY(-8px)' : 'none',
+    boxShadow: theme.palette.mode === 'dark'
+      ? '0 8px 25px rgba(0, 0, 0, 0.5)'
+      : '0 8px 25px rgba(0, 0, 0, 0.15)',
     '& .MuiCardMedia-root': {
       transform: 'scale(1.08)'
-    },
-    '& .quick-actions': {
-      opacity: 1,
-      transform: 'translate(-50%, -5px)'
     }
   }
 }));
 
-const ProductImage = styled(CardMedia)({
+const ProductImage = styled(CardMedia)(({ theme }) => ({
   height: 0,
   paddingTop: '100%',
   transition: 'transform 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-  background: 'linear-gradient(45deg, #f8f9fa, #ffffff)'
-});
+  backgroundColor: theme.palette.mode === 'dark' ? '#2a3441' : '#f8f9fa',
+  position: 'relative',
+  '&::after': {
+    content: '""',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    background: theme.palette.mode === 'dark'
+      ? 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.2) 100%)'
+      : 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(0,0,0,0.05) 100%)',
+  }
+}));
 
-const QuickActions = styled(Box)({
+const QuickActions = styled(Box)(({ theme }) => ({
   position: 'absolute',
   bottom: '1.5rem',
   left: '50%',
@@ -55,140 +70,105 @@ const QuickActions = styled(Box)({
   gap: '0.8rem',
   opacity: 0,
   transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-  zIndex: 2
-});
-
-const ActionButton = styled(IconButton)(({ theme }) => ({
-  background: 'rgba(255, 255, 255, 0.95)',
-  backdropFilter: 'blur(5px)',
-  boxShadow: '0 4px 15px rgba(0, 0, 0, 0.1)',
-  '&:hover': {
-    background: theme.palette.primary.main,
-    color: 'white',
-    transform: 'translateY(-3px)',
-    boxShadow: `0 6px 20px ${theme.palette.primary.main}40`
+  zIndex: 2,
+  '& .MuiIconButton-root': {
+    backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.15)' : 'rgba(255, 255, 255, 0.9)',
+    color: theme.palette.mode === 'dark' ? '#fff' : '#1a2635',
+    '&:hover': {
+      backgroundColor: theme.palette.mode === 'dark' ? 'rgba(255, 255, 255, 0.25)' : theme.palette.primary.main,
+      color: theme.palette.mode === 'dark' ? '#fff' : '#fff',
+    }
   }
 }));
 
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-IN').format(price);
+};
+
 const Card = ({ product }) => {
-  const { id, name, brand, price, available, stockQuantity, imageUrl } = product;
+  const theme = useTheme();
+
+  if (!product) {
+    return null;
+  }
+
+  const { addToCart, user } = useContext(AppContext);
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  const handleAddToCart = (e) => {
+  const handleAddToCart = async (e) => {
     e.preventDefault();
-    // Your cart logic here
+    e.stopPropagation();
+    
+    if (!user) {
+      setShowLoginModal(true);
+      return;
+    }
+
+    try {
+      await addToCart(product);
+    } catch (error) {
+      if (error.message === "Please log in to add items to cart") {
+        setShowLoginModal(true);
+      } else {
+        console.error("Failed to add to cart:", error);
+      }
+    }
   };
 
   return (
     <StyledCard>
-      <Link to={`/product/${id}`} style={{ textDecoration: 'none' }}>
-        <Box sx={{ position: 'relative' }}>
-          <ProductImage
-            image={imageUrl || "placeholder-image-url"}
-            title={name}
-          />
-          
-          {!available && (
-            <Box
-              sx={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                bottom: 0,
-                background: 'linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.6))',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backdropFilter: 'blur(2px)'
+      <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
+        <ProductImage image={product.imageUrl} title={product.name} />
+        <CardContent sx={{ p: 2.5 }}>
+          <Box sx={{ mb: 2 }}>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 600,
+                color: 'text.primary',
+                mb: 0.5,
+                fontSize: { xs: '1rem', sm: '1.1rem' }
               }}
             >
-              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600 }}>
-                Out of Stock
-              </Typography>
-            </Box>
-          )}
-
-          <QuickActions className="quick-actions">
-            <ActionButton
-              disabled={!available}
-              onClick={handleAddToCart}
-              size="large"
-            >
-              <ShoppingCart />
-            </ActionButton>
-            <ActionButton
-              component={Link}
-              to={`/product/${id}`}
-              size="large"
-            >
-              <Visibility />
-            </ActionButton>
-          </QuickActions>
-        </Box>
-
-        <CardContent sx={{ p: 2.5 }}>
-          <Chip 
-            label={brand}
-            size="small"
-            color="primary"
-            sx={{ mb: 1, textTransform: 'uppercase', letterSpacing: '0.5px' }}
-          />
-          
-          <Typography 
-            variant="h6" 
-            sx={{ 
-              mb: 2,
-              fontWeight: 700,
-              fontSize: '1.2rem',
-              lineHeight: 1.4
-            }}
-          >
-            {name}
-          </Typography>
-
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              pt: 1.5,
-              borderTop: '1px solid rgba(0,0,0,0.05)'
-            }}
-          >
-            <Typography variant="h6" sx={{ fontWeight: 700 }}>
-              <Typography 
-                component="span" 
-                sx={{ 
-                  fontSize: '0.9em',
-                  color: 'text.secondary',
-                  mr: 0.5 
-                }}
-              >
-                ₹
-              </Typography>
-              {price.toLocaleString()}
+              {product.name}
             </Typography>
-
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              {available ? (
-                <Chip
-                  icon={<CheckCircleIcon />}
-                  label={`${stockQuantity} in stock`}
-                  size="small"
-                  color="success"
-                  variant="outlined"
-                />
-              ) : (
-                <Chip
-                  icon={<CancelIcon />}
-                  label="Out of Stock"
-                  size="small"
-                  color="error"
-                  variant="outlined"
-                />
-              )}
-            </Box>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                color: 'text.secondary',
+                mb: 1.5,
+                fontSize: { xs: '0.8rem', sm: '0.9rem' }
+              }}
+            >
+              {product.brand}
+            </Typography>
+            <Typography 
+              variant="h6" 
+              sx={{ 
+                fontWeight: 700,
+                color: 'primary.main',
+                mb: 1.5,
+                fontSize: { xs: '1.1rem', sm: '1.2rem' }
+              }}
+            >
+              ₹{formatPrice(product.price)}
+            </Typography>
+            <Chip
+              icon={product.available ? <CheckCircleIcon /> : <CancelIcon />}
+              label={product.available ? `${product.stockQuantity} in stock` : "Out of Stock"}
+              size="small"
+              color={product.available ? "success" : "error"}
+              variant="outlined"
+              sx={{ 
+                fontSize: { xs: '0.7rem', sm: '0.8rem' },
+                backgroundColor: theme.palette.mode === 'dark' 
+                  ? 'rgba(255, 255, 255, 0.05)' 
+                  : 'rgba(0, 0, 0, 0.04)',
+                borderColor: theme.palette.mode === 'dark'
+                  ? 'rgba(255, 255, 255, 0.15)'
+                  : 'rgba(0, 0, 0, 0.15)'
+              }}
+            />
           </Box>
         </CardContent>
       </Link>

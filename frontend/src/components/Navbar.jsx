@@ -1,215 +1,345 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Link } from "react-router-dom";
-import Login from './Login';
-import Signup from './Signup';
+import React, { useState, useContext, useEffect } from 'react';
+import {
+  AppBar,
+  Box,
+  Toolbar,
+  IconButton,
+  Typography,
+  Menu,
+  Container,
+  Avatar,
+  Button,
+  Tooltip,
+  MenuItem,
+  InputBase,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  ListItemIcon,
+  Divider,
+  Badge,
+} from '@mui/material';
+import {
+  Menu as MenuIcon,
+  Search as SearchIcon,
+  ShoppingCart as ShoppingCartIcon,
+  Person as PersonIcon,
+  Add as AddIcon,
+  Login as LoginIcon,
+  Logout as LogoutIcon,
+  Category as CategoryIcon,
+  DarkMode,
+  LightMode,
+} from '@mui/icons-material';
+import { styled, alpha } from '@mui/material/styles';
+import { Link, useNavigate } from 'react-router-dom';
+import AppContext from '../Context/Context';
+import axios from '../axios';
+import Logo from './Logo';
 
-const Navbar = ({ onSelectCategory, onSearch }) => {
-  const getInitialTheme = () => {
-    const storedTheme = localStorage.getItem("theme");
-    return storedTheme ? storedTheme : "light-theme";
-  };
+// Styled components
+const Search = styled('div')(({ theme }) => ({
+  position: 'relative',
+  borderRadius: theme.shape.borderRadius,
+  backgroundColor: theme.palette.mode === 'dark' 
+    ? 'rgba(255, 255, 255, 0.08)'
+    : 'rgba(0, 0, 0, 0.04)',
+  '&:hover': {
+    backgroundColor: theme.palette.mode === 'dark'
+      ? 'rgba(255, 255, 255, 0.12)'
+      : 'rgba(0, 0, 0, 0.08)',
+  },
+  marginRight: theme.spacing(2),
+  marginLeft: 0,
+  width: '100%',
+  [theme.breakpoints.up('sm')]: {
+    marginLeft: theme.spacing(3),
+    width: 'auto',
+  },
+  '& .MuiInputBase-input': {
+    color: theme.palette.mode === 'dark' ? '#ffffff' : '#1a1a1a',
+    '&::placeholder': {
+      color: theme.palette.mode === 'dark' 
+        ? 'rgba(255, 255, 255, 0.6)' 
+        : 'rgba(0, 0, 0, 0.6)',
+      opacity: 1,
+    },
+  },
+}));
 
-  const [selectedCategory, setSelectedCategory] = useState("");
-  const [theme, setTheme] = useState(getInitialTheme());
-  const [input, setInput] = useState("");
-  const [categories, setCategories] = useState([]);
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
-  const [showSignup, setShowSignup] = useState(false);
-  const [user, setUser] = useState(JSON.parse(localStorage.getItem('user')));
+const SearchIconWrapper = styled('div')(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: '100%',
+  position: 'absolute',
+  pointerEvents: 'none',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+}));
+
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: 'inherit',
+  '& .MuiInputBase-input': {
+    padding: theme.spacing(1, 1, 1, 0),
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create('width'),
+    width: '100%',
+    [theme.breakpoints.up('md')]: {
+      width: '20ch',
+    },
+  },
+}));
+
+const Navbar = ({ onSearch, onSelectCategory, onThemeToggle, isDarkMode }) => {
+  const { user, cart, logout } = useContext(AppContext);
+  const navigate = useNavigate();
+  const [anchorElNav, setAnchorElNav] = useState(null);
+  const [anchorElUser, setAnchorElUser] = useState(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [categories, setCategories] = useState(['All Categories']);
+  const [selectedCategory, setSelectedCategory] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCategories();
-    
-    // Add scroll listener
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('/api/categories');
+        setCategories(['All Categories', ...response.data]);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setLoading(false);
+      }
     };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+
+    fetchCategories();
   }, []);
 
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get("http://localhost:8080/api/categories");
-      setCategories(response.data);
-    } catch (error) {
-      console.error("Error fetching categories:", error);
-    }
+  const handleOpenNavMenu = (event) => {
+    setAnchorElNav(event.currentTarget);
   };
 
-  const handleSearchChange = (e) => {
-    const value = e.target.value;
-    setInput(value);
-    onSearch(value);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseNavMenu = () => {
+    setAnchorElNav(null);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleSearch = (event) => {
+    const query = event.target.value;
+    setSearchQuery(query);
+    onSearch(query);
   };
 
   const handleCategorySelect = (category) => {
-    const selectedCat = category === "All" ? "" : category;
-    setSelectedCategory(selectedCat);
-    onSelectCategory(selectedCat);
-  };
-
-  const toggleTheme = () => {
-    const newTheme = theme === "dark-theme" ? "light-theme" : "dark-theme";
-    setTheme(newTheme);
-    localStorage.setItem("theme", newTheme);
-  };
-
-  useEffect(() => {
-    document.body.className = theme;
-  }, [theme]);
-
-  const handleLoginSuccess = (userData) => {
-    setUser(userData);
-    setShowLogin(false);
-  };
-
-  const handleSignupSuccess = () => {
-    setShowSignup(false);
-    setShowLogin(true);
+    setSelectedCategory(category);
+    onSelectCategory(category === 'All Categories' ? '' : category);
+    setDrawerOpen(false);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    setUser(null);
+    logout();
+    handleCloseUserMenu();
+    navigate('/');
   };
 
-  const authButtons = user ? (
-    <div className="nav-item dropdown">
-      <a className="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-        {user.username}
-      </a>
-      <ul className="dropdown-menu">
-        <li><button className="dropdown-item" onClick={handleLogout}>Logout</button></li>
-      </ul>
-    </div>
-  ) : (
-    <>
-      <button className="btn btn-outline-primary me-2" onClick={() => setShowLogin(true)}>
-        Login
-      </button>
-      <button className="btn btn-primary" onClick={() => setShowSignup(true)}>
-        Sign Up
-      </button>
-    </>
-  );
-
-  const loginModal = showLogin && (
-    <div className="modal show" style={{ display: 'block' }}>
-      <div className="modal-dialog">
-        <Login onClose={() => setShowLogin(false)} onLoginSuccess={handleLoginSuccess} />
-      </div>
-    </div>
-  );
-
-  const signupModal = showSignup && (
-    <div className="modal show" style={{ display: 'block' }}>
-      <div className="modal-dialog">
-        <Signup onClose={() => setShowSignup(false)} onSignupSuccess={handleSignupSuccess} />
-      </div>
-    </div>
-  );
-
   return (
-    <header className={`fixed-top navbar-wrapper ${isScrolled ? 'scrolled' : ''}`}>
-      <nav className={`navbar navbar-expand-lg ${theme === "dark-theme" ? "navbar-dark" : "navbar-light"}`}>
-        <div className="container">
-          <Link className="navbar-brand d-flex align-items-center" to="/">
-            <i className="bi bi-shop me-2"></i>
-            <span className="brand-text">ShopEase</span>
-          </Link>
-          
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarContent"
+    <AppBar 
+      position="sticky" 
+      sx={{ 
+        bgcolor: 'background.paper',
+        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
+      }}
+    >
+      <Container maxWidth="xl">
+        <Toolbar disableGutters>
+          {/* Mobile Menu Icon */}
+          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+            <IconButton
+              size="large"
+              onClick={() => setDrawerOpen(true)}
+              color="inherit"
+            >
+              <MenuIcon />
+            </IconButton>
+          </Box>
+
+          {/* Logo */}
+          <Box
+            component={Link}
+            to="/"
+            sx={{
+              mr: 2,
+              display: { xs: 'none', md: 'flex' },
+              textDecoration: 'none',
+            }}
           >
-            <span className="navbar-toggler-icon"></span>
-          </button>
+            <Logo />
+          </Box>
 
-          <div className="collapse navbar-collapse" id="navbarContent">
-            <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <Link className="nav-link" to="/">
-                  Home
-                </Link>
-              </li>
-              <li className="nav-item">
-                <Link className="nav-link" to="/add_product">
-                  Add Product
-                </Link>
-              </li>
-              <li className="nav-item dropdown">
-                <a
-                  className="nav-link dropdown-toggle"
-                  href="#"
-                  role="button"
-                  data-bs-toggle="dropdown"
-                >
-                  Categories
-                </a>
-                <ul className="dropdown-menu">
-                  <li key="all">
-                    <button
-                      className="dropdown-item"
-                      onClick={() => handleCategorySelect("All")}
-                    >
-                      All
-                    </button>
-                  </li>
-                  {categories.map((category) => (
-                    <li key={category}>
-                      <button
-                        className="dropdown-item"
-                        onClick={() => handleCategorySelect(category)}
-                      >
-                        {category}
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </li>
-            </ul>
+          {/* Mobile Logo */}
+          <Box
+            component={Link}
+            to="/"
+            sx={{
+              flexGrow: 1,
+              display: { xs: 'flex', md: 'none' },
+              textDecoration: 'none',
+            }}
+          >
+            <Logo />
+          </Box>
 
-            <div className="nav-actions d-flex align-items-center gap-3">
-              <div className="search-bar">
-                <input
-                  type="search"
-                  className="form-control"
-                  placeholder="Search products..."
-                  value={input}
-                  onChange={handleSearchChange}
-                />
-                <i className="bi bi-search"></i>
-              </div>
+          {/* Search Bar */}
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={handleSearch}
+              inputProps={{ 'aria-label': 'search' }}
+            />
+          </Search>
 
-              <button
-                className="theme-toggle"
-                onClick={toggleTheme}
-                aria-label="Toggle theme"
+          {/* Desktop Navigation */}
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 4 }}>
+            {categories.map((category) => (
+              <Button
+                key={category}
+                onClick={() => handleCategorySelect(category)}
+                sx={{
+                  color: 'text.primary',
+                  display: 'block',
+                  fontWeight: selectedCategory === category ? 700 : 400,
+                  borderBottom: selectedCategory === category ? 2 : 0,
+                  borderColor: 'primary.main',
+                  borderRadius: 0,
+                  px: 2
+                }}
               >
-                {theme === "dark-theme" ? (
-                  <i className="bi bi-moon-stars-fill"></i>
-                ) : (
-                  <i className="bi bi-sun-fill"></i>
-                )}
-              </button>
+                {category}
+              </Button>
+            ))}
+          </Box>
 
-              <Link to="/cart" className="cart-button">
-                <i className="bi bi-cart3"></i>
-                <span>Cart</span>
-              </Link>
-              {authButtons}
-            </div>
-          </div>
-        </div>
-      </nav>
-      {loginModal}
-      {signupModal}
-    </header>
+          {/* Cart & User Menu */}
+          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton
+              component={Link}
+              to="/cart"
+              color="inherit"
+              sx={{ position: 'relative' }}
+            >
+              <Badge badgeContent={cart.length} color="primary">
+                <ShoppingCartIcon />
+              </Badge>
+            </IconButton>
+
+            {user ? (
+              <>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu}>
+                    <Avatar alt={user.name} src={user.avatar} />
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  anchorEl={anchorElUser}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
+                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                >
+                  <MenuItem component={Link} to="/profile">
+                    <ListItemIcon>
+                      <PersonIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Profile</ListItemText>
+                  </MenuItem>
+                  <MenuItem component={Link} to="/add_product">
+                    <ListItemIcon>
+                      <AddIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Add Product</ListItemText>
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem onClick={handleLogout}>
+                    <ListItemIcon>
+                      <LogoutIcon fontSize="small" />
+                    </ListItemIcon>
+                    <ListItemText>Logout</ListItemText>
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button
+                component={Link}
+                to="/login"
+                startIcon={<LoginIcon />}
+                variant="contained"
+                color="primary"
+              >
+                Login
+              </Button>
+            )}
+          </Box>
+
+          {/* Add Theme Toggle Button */}
+          <IconButton
+            onClick={onThemeToggle}
+            color="inherit"
+            sx={{ ml: 2 }}
+          >
+            {isDarkMode ? <LightMode /> : <DarkMode />}
+          </IconButton>
+        </Toolbar>
+      </Container>
+
+      {/* Mobile Category Drawer */}
+      <Drawer
+        anchor="left"
+        open={drawerOpen}
+        onClose={() => setDrawerOpen(false)}
+      >
+        <Box
+          sx={{ width: 250 }}
+          role="presentation"
+        >
+          <List>
+            <ListItem>
+              <Typography variant="h6" sx={{ fontWeight: 700 }}>
+                Categories
+              </Typography>
+            </ListItem>
+            <Divider />
+            {categories.map((category) => (
+              <ListItem
+                key={category}
+                button
+                onClick={() => handleCategorySelect(category)}
+                sx={{
+                  bgcolor: selectedCategory === category ? 'action.selected' : 'transparent'
+                }}
+              >
+                <ListItemIcon>
+                  <CategoryIcon />
+                </ListItemIcon>
+                <ListItemText primary={category} />
+              </ListItem>
+            ))}
+          </List>
+        </Box>
+      </Drawer>
+    </AppBar>
   );
 };
 

@@ -102,9 +102,17 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await axios.get("/api/products");
-      setData(response.data);
+      if (response.data) {
+        setData(response.data);
+        setIsError("");
+      } else {
+        setIsError("No products found");
+        setData([]);
+      }
     } catch (error) {
-      setIsError(error.message);
+      console.error("Error fetching products:", error);
+      setIsError(error.response?.data?.message || "Failed to fetch products");
+      setData([]);
     } finally {
       setLoading(false);
     }
@@ -176,3 +184,4 @@ export const AppProvider = ({ children }) => {
 };
 
 export default AppContext;
+

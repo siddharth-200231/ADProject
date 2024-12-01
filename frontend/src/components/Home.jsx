@@ -3,6 +3,7 @@ import axios from "../axios";
 import Card from "./Card";
 import unplugged from "../assets/unplugged.png";
 import "./Home.css";
+import { Grid, Container, Box, Typography, CircularProgress } from '@mui/material';
 
 const Home = ({ selectedCategory, searchQuery }) => {
   const [products, setProducts] = useState([]);
@@ -13,12 +14,17 @@ const Home = ({ selectedCategory, searchQuery }) => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get("/products");
-        setProducts(response.data);
-        setError(null);
+        const response = await axios.get("/api/products");
+        if (response.data) {
+          setProducts(response.data);
+          setError(null);
+        } else {
+          setError("No products found");
+        }
       } catch (err) {
-        setError("Failed to fetch products");
         console.error("Error fetching products:", err);
+        setError(err.response?.data?.message || "Failed to fetch products. Please try again later.");
+        setProducts([]);
       } finally {
         setLoading(false);
       }
@@ -31,7 +37,7 @@ const Home = ({ selectedCategory, searchQuery }) => {
   const filteredProducts = products.filter(product => {
     let matches = true;
     
-    if (selectedCategory) {
+    if (selectedCategory && selectedCategory !== 'All Categories') {
       matches = matches && product.category === selectedCategory;
     }
     
@@ -39,8 +45,8 @@ const Home = ({ selectedCategory, searchQuery }) => {
       const query = searchQuery.toLowerCase();
       matches = matches && (
         product.name.toLowerCase().includes(query) ||
-        product.brand.toLowerCase().includes(query) ||
-        product.category.toLowerCase().includes(query)
+        product.description.toLowerCase().includes(query) ||
+        product.brand.toLowerCase().includes(query)
       );
     }
     
@@ -49,48 +55,98 @@ const Home = ({ selectedCategory, searchQuery }) => {
 
   if (loading) {
     return (
-      <div className="loading-container">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
-        </div>
-      </div>
+      <Box 
+        sx={{ 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          minHeight: '100vh',
+          bgcolor: 'background.default'
+        }}
+      >
+        <CircularProgress />
+      </Box>
     );
   }
 
   if (error) {
     return (
-      <div className="error-container">
-        <img src={unplugged} alt="Error" className="error-image" />
-        <p className="error-message">{error}</p>
-      </div>
+      <Box 
+        sx={{ 
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '100vh',
+          bgcolor: 'background.default',
+          color: 'text.primary'
+        }}
+      >
+        <img 
+          src={unplugged} 
+          alt="Error" 
+          style={{ 
+            maxWidth: '200px',
+            width: '100%',
+            marginBottom: '1rem'
+          }} 
+        />
+        <Typography variant="h6" color="error">
+          {error}
+        </Typography>
+      </Box>
     );
   }
 
   return (
-    <div className="home-container">
-      {selectedCategory && (
-        <div className="category-header">
-          <h1 className="category-title">{selectedCategory}</h1>
-          <p className="category-count">{filteredProducts.length} products found</p>
-        </div>
+    <Container 
+      maxWidth="xl" 
+      sx={{ 
+        py: { xs: 2, sm: 4 },
+        bgcolor: 'background.default',
+        minHeight: '100vh'
+      }}
+    >
+      {selectedCategory && selectedCategory !== 'All Categories' && (
+        <Box sx={{ mb: { xs: 2, sm: 4 } }}>
+          <Typography variant="h4" sx={{ 
+            fontSize: { xs: '1.5rem', sm: '2rem' },
+            fontWeight: 700 
+          }}>
+            {selectedCategory}
+          </Typography>
+          <Typography variant="body1" color="text.secondary">
+            {filteredProducts.length} products found
+          </Typography>
+        </Box>
       )}
 
-      <div className="products-section">
-        {filteredProducts.length === 0 ? (
-          <div className="no-products">
-            <img src={unplugged} alt="No Products" />
-            <h2>No Products Found</h2>
-            <p>Try adjusting your search or filters</p>
-          </div>
-        ) : (
-          <div className="products-grid">
-            {filteredProducts.map((product) => (
-              <Card key={product.id} product={product} />
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+      {filteredProducts.length === 0 ? (
+        <Box sx={{ 
+          textAlign: 'center', 
+          py: { xs: 4, sm: 8 } 
+        }}>
+          <img 
+            src={unplugged} 
+            alt="No Products" 
+            style={{ 
+              maxWidth: '200px',
+              width: '100%' 
+            }} 
+          />
+          <Typography variant="h5" sx={{ mt: 2 }}>No Products Found</Typography>
+          <Typography color="text.secondary">Try adjusting your search or filters</Typography>
+        </Box>
+      ) : (
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
+          {filteredProducts.map((product) => (
+            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+              <Card product={product} />
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Container>
   );
 };
 

@@ -1,8 +1,11 @@
-.dark-theme{
-    --root_background: #1f1f1f;}
-    .light-theme{
-        --root_background: white;
-    }
-:root{
-    background-color: #1f1f1f;
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  transition: background-color 0.3s ease;
+}
+
+.dark-theme {
+  background-color: #0a1929;
+  color: #ffffff;
 }
