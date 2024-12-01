@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS cart (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     user_id BIGINT,
-    user_cart BOOLEAN,
+    user_cart BOOLEAN DEFAULT true,
     FOREIGN KEY (user_id) REFERENCES users(id)
 );
 

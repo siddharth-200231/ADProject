@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 @Service
+@Transactional
 public class CartService {
     
     @Autowired
@@ -25,14 +26,12 @@ public class CartService {
     @Autowired
     private ProductRepository productRepository;
 
-    @Transactional
     public Cart getCartByUserId(Long userId) {
-        User user = userRepository.findById(userId)
-            .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
-        
-        return cartRepository.findByUser(user)
+        return cartRepository.findByUser_IdAndIsUserCart(userId, true)
             .orElseGet(() -> {
                 Cart newCart = new Cart();
+                User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("User not found"));
                 newCart.setUser(user);
                 newCart.setIsUserCart(true);
                 return cartRepository.save(newCart);
