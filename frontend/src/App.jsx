@@ -13,6 +13,7 @@ import { getTheme } from './theme';
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Profile from "./pages/Profile";
+import { SnackbarProvider } from 'notistack';
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -30,29 +31,37 @@ function App() {
   return (
     <div className="dark-theme">
       <ThemeProvider theme={theme}>
-        <CssBaseline />
-        <BrowserRouter>
-          <Navbar 
-            onSelectCategory={handleCategorySelect} 
-            onSearch={setSearchQuery}
-            isDarkMode={true}
-          />
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <Home selectedCategory={selectedCategory} searchQuery={searchQuery} />
-              }
+        <SnackbarProvider 
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+        >
+          <CssBaseline />
+          <BrowserRouter>
+            <Navbar 
+              onSelectCategory={handleCategorySelect} 
+              onSearch={setSearchQuery}
+              isDarkMode={true}
             />
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/add_product" element={<AddProduct />} />
-            <Route path="/product/:id" element={<Product />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/product/update/:id" element={<UpdateProduct />} />
-            <Route path="/profile" element={<Profile />} />
-          </Routes>
-        </BrowserRouter>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <Home selectedCategory={selectedCategory} searchQuery={searchQuery} />
+                }
+              />
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/add_product" element={<AddProduct />} />
+              <Route path="/product/:id" element={<Product />} />
+              <Route path="/cart" element={<Cart />} />
+              <Route path="/product/update/:id" element={<UpdateProduct />} />
+              <Route path="/profile" element={<Profile />} />
+            </Routes>
+          </BrowserRouter>
+        </SnackbarProvider>
       </ThemeProvider>
     </div>
   );

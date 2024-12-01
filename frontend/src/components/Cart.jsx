@@ -18,18 +18,34 @@ import {
   Delete as DeleteIcon,
   ShoppingCart
 } from '@mui/icons-material';
+import { useNotification } from '../hooks/useNotification';
+import axios from '../axios';
 
 const Cart = () => {
   const { cart, removeFromCart } = useContext(AppContext);
   const [showCheckout, setShowCheckout] = useState(false);
+  const { showSuccess, showError } = useNotification();
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
   };
 
-  const handleCheckout = () => {
+  const handleCheckout = async () => {
     setShowCheckout(false);
-    alert('Thank you for your purchase!');
+    try {
+      const userId = JSON.parse(localStorage.getItem('user')).id;
+      const response = await axios.post(`/api/cart/${userId}/purchase`);
+      
+      if (response.status === 200) {
+        showSuccess('Purchase completed successfully!');
+        // Clear cart or update UI
+      } else {
+        showError(`Purchase failed: ${response.data?.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Purchase error:', error);
+      showError(error.response?.data?.message || 'Failed to complete purchase. Please try again.');
+    }
   };
 
   if (!cart || cart.length === 0) {

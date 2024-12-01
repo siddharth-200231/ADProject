@@ -34,4 +34,8 @@ public class Product {
     private String brand;
     private boolean available;
     private int stockQuantity;
+
+    public Long getId() {
+        return id;
+    }
 }
