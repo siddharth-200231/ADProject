@@ -11,12 +11,16 @@ import UpdateProduct from "./components/UpdateProduct";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import { theme, darkTheme } from './theme';
 
 
 function App() {
   const [cart, setCart] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
@@ -38,25 +42,32 @@ function App() {
   };
 
   return (
-    <AppProvider>
-      <BrowserRouter>
-        <Navbar onSelectCategory={handleCategorySelect} onSearch={setSearchQuery} />
-        <Routes>
-          <Route
-            path="/"
-            element={
-              <Home addToCart={addToCart} selectedCategory={selectedCategory} searchQuery={searchQuery}
-              />
-            }
+    <ThemeProvider theme={isDarkMode ? darkTheme : theme}>
+      <CssBaseline />
+      <AppProvider>
+        <BrowserRouter>
+          <Navbar 
+            onSelectCategory={handleCategorySelect} 
+            onSearch={setSearchQuery}
+            onThemeToggle={() => setIsDarkMode(!isDarkMode)}
           />
-          <Route path="/add_product" element={<AddProduct />} />
-          <Route path="/product" element={<Product  />} />
-          <Route path="product/:id" element={<Product  />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/product/update/:id" element={<UpdateProduct />} />
-        </Routes>
-      </BrowserRouter>
-    </AppProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Home addToCart={addToCart} selectedCategory={selectedCategory} searchQuery={searchQuery}
+                />
+              }
+            />
+            <Route path="/add_product" element={<AddProduct />} />
+            <Route path="/product" element={<Product  />} />
+            <Route path="product/:id" element={<Product  />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/product/update/:id" element={<UpdateProduct />} />
+          </Routes>
+        </BrowserRouter>
+      </AppProvider>
+    </ThemeProvider>
   );
 }
 
