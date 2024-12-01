@@ -4,6 +4,7 @@ import com.adp.backend.models.Cart;
 import com.adp.backend.models.CartItem;
 import com.adp.backend.services.CartService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,24 +26,39 @@ public class CartController {
     }
 
     @PostMapping("/{userId}/add/{productId}")
-    public CartItem addToCart(
+    public ResponseEntity<?> addToCart(
             @PathVariable String userId,
             @PathVariable int productId,
             @RequestParam(defaultValue = "1") int quantity,
             @RequestParam boolean isUserCart) {
-        return cartService.addItemToCart(userId, productId, quantity, isUserCart);
+        try {
+            CartItem cartItem = cartService.addItemToCart(userId, productId, quantity, isUserCart);
+            return ResponseEntity.ok(cartItem);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @DeleteMapping("/item/{cartItemId}")
-    public void removeFromCart(@PathVariable Long cartItemId) {
-        cartService.removeItemFromCart(cartItemId);
+    @DeleteMapping("/item/{itemId}")
+    public ResponseEntity<?> removeFromCart(@PathVariable Long itemId) {
+        try {
+            cartService.removeItemFromCart(itemId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
-    @PutMapping("/item/{cartItemId}")
-    public void updateItemQuantity(
-            @PathVariable Long cartItemId,
+    @PutMapping("/item/{itemId}")
+    public ResponseEntity<?> updateCartItemQuantity(
+            @PathVariable Long itemId,
             @RequestParam int quantity) {
-        cartService.updateItemQuantity(cartItemId, quantity);
+        try {
+            CartItem updatedItem = cartService.updateItemQuantity(itemId, quantity);
+            return ResponseEntity.ok(updatedItem);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @DeleteMapping("/{userId}")
@@ -52,10 +68,15 @@ public class CartController {
         cartService.clearCart(userId, isUserCart);
     }
 
-    @PostMapping("/transfer")
-    public void transferCart(
+    @PostMapping("/merge")
+    public ResponseEntity<?> mergeSessionCart(
             @RequestParam String sessionId,
             @RequestParam String userId) {
-        cartService.transferSessionCartToUserCart(sessionId, userId);
+        try {
+            cartService.transferSessionCartToUserCart(sessionId, userId);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 } 

@@ -1,15 +1,20 @@
 package com.adp.backend.services;
 
-import com.adp.backend.models.Cart;
-import com.adp.backend.models.CartItem;
-import com.adp.backend.models.Product;
-import com.adp.backend.repositories.CartRepository;
-import com.adp.backend.ProductRepo;
+import java.util.ArrayList;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.UUID;
+
+import com.adp.backend.ProductRepo;
+import com.adp.backend.UserRepo;
+import com.adp.backend.models.Cart;
+import com.adp.backend.models.CartItem;
+import com.adp.backend.models.Product;
+import com.adp.backend.models.User;
+import com.adp.backend.repositories.CartItemRepository;
+import com.adp.backend.repositories.CartRepository;
 
 @Service
 public class CartService {
@@ -20,16 +25,29 @@ public class CartService {
     @Autowired
     private ProductRepo productRepo;
 
+    @Autowired
+    private UserRepo userRepo;
+
+    @Autowired
+    private CartItemRepository cartItemRepository;
+
     public String createSession() {
         return UUID.randomUUID().toString();
     }
 
     @Transactional
     public Cart getOrCreateCart(String userId, boolean isUserCart) {
-        return cartRepository.findByUserIdAndUserCart(userId, isUserCart)
+        User user = userRepo.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return getOrCreateCart(user, isUserCart);
+    }
+
+    @Transactional
+    public Cart getOrCreateCart(User user, boolean isUserCart) {
+        return cartRepository.findByUser_IdAndUserCart(user.getId(), isUserCart)
                 .orElseGet(() -> {
                     Cart newCart = new Cart();
-                    newCart.setUserId(userId);
+                    newCart.setUser(user);
                     newCart.setUserCart(isUserCart);
                     newCart.setItems(new ArrayList<>());
                     return cartRepository.save(newCart);
@@ -38,7 +56,7 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public Cart getCart(String userId, boolean isUserCart) {
-        return cartRepository.findByUserIdAndUserCart(userId, isUserCart)
+        return cartRepository.findByUser_IdAndUserCart(Long.valueOf(userId), isUserCart)
                 .orElseGet(() -> getOrCreateCart(userId, isUserCart));
     }
 
@@ -71,30 +89,25 @@ public class CartService {
 
     @Transactional
     public void removeItemFromCart(Long cartItemId) {
-        Cart cart = cartRepository.findByCartItemId(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for item: " + cartItemId));
-        
-        cart.getItems().removeIf(item -> item.getId().equals(cartItemId));
+        CartItem item = cartItemRepository.findById(cartItemId)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+        Cart cart = item.getCart();
+        cart.removeItem(item);
         cartRepository.save(cart);
     }
 
     @Transactional
-    public void updateItemQuantity(Long cartItemId, int quantity) {
-        Cart cart = cartRepository.findByCartItemId(cartItemId)
-                .orElseThrow(() -> new RuntimeException("Cart not found for item: " + cartItemId));
-
-        cart.getItems().stream()
-            .filter(item -> item.getId().equals(cartItemId))
-            .findFirst()
-            .ifPresent(item -> {
-                if (quantity <= 0) {
-                    cart.removeItem(item);
-                } else {
-                    item.setQuantity(quantity);
-                }
-            });
-
-        cartRepository.save(cart);
+    public CartItem updateItemQuantity(Long itemId, int quantity) {
+        CartItem item = cartItemRepository.findById(itemId)
+                .orElseThrow(() -> new RuntimeException("Cart item not found"));
+        
+        if (quantity <= 0) {
+            item.getCart().removeItem(item);
+            return null;
+        } else {
+            item.setQuantity(quantity);
+            return item;
+        }
     }
 
     @Transactional

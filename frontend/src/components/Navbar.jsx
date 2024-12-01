@@ -301,6 +301,45 @@ const MobileMenu = ({ onClose, onSelectCategory }) => {
   );
 };
 
+const UserMenu = ({ anchorEl, handleClose, user, handleLogout }) => (
+  <Menu
+    anchorEl={anchorEl}
+    open={Boolean(anchorEl)}
+    onClose={handleClose}
+    PaperProps={{
+      sx: {
+        backgroundColor: 'var(--dark-bg-secondary)',
+        border: '1px solid var(--glass-border)',
+        borderRadius: '12px',
+        mt: 1.5,
+      }
+    }}
+  >
+    <MenuItem onClick={handleClose} component={Link} to="/profile">
+      <ListItemIcon>
+        <PersonIcon fontSize="small" />
+      </ListItemIcon>
+      <ListItemText primary="Profile" />
+    </MenuItem>
+    
+    <MenuItem onClick={handleClose} component={Link} to="/orders">
+      <ListItemIcon>
+        <ShoppingBagIcon fontSize="small" />
+      </ListItemIcon>
+      <ListItemText primary="Orders" />
+    </MenuItem>
+    
+    <Divider sx={{ my: 1, borderColor: 'var(--glass-border)' }} />
+    
+    <MenuItem onClick={handleLogout}>
+      <ListItemIcon>
+        <LogoutIcon fontSize="small" />
+      </ListItemIcon>
+      <ListItemText primary="Logout" />
+    </MenuItem>
+  </Menu>
+);
+
 const Navbar = ({ onSearch, onSelectCategory }) => {
   const { user, cart, logout } = useContext(AppContext);
   const navigate = useNavigate();
@@ -416,8 +455,7 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
           <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
             {/* Cart Icon */}
             <IconButton
-              component={Link}
-              to="/cart"
+              onClick={() => navigate('/cart')}
               sx={{
                 p: { xs: 0.5, sm: 1 },
                 '&:hover': {
@@ -443,7 +481,27 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
 
             {/* User Menu */}
             {user ? (
-              <UserMenu user={user} onLogout={handleLogout} />
+              <>
+                <IconButton
+                  onClick={handleOpenUserMenu}
+                  sx={{
+                    p: 0.5,
+                    border: '2px solid',
+                    borderColor: 'primary.main',
+                    '&:hover': { transform: 'scale(1.05)' }
+                  }}
+                >
+                  <Avatar sx={{ width: 32, height: 32 }}>
+                    {user.username ? user.username[0].toUpperCase() : 'U'}
+                  </Avatar>
+                </IconButton>
+                <UserMenu 
+                  anchorEl={anchorElUser}
+                  handleClose={handleCloseUserMenu}
+                  user={user}
+                  handleLogout={logout}
+                />
+              </>
             ) : (
               <Button
                 component={Link}

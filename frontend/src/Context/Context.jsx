@@ -1,6 +1,19 @@
 import axios from "../axios";
 import { useState, useEffect, createContext } from "react";
 
+axios.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
+
 const AppContext = createContext({
   data: [],
   isError: "",
@@ -57,22 +70,27 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (product, quantity = 1) => {
+  const addToCart = async (product, quantity) => {
     if (!user) {
       throw new Error("Please log in to add items to cart");
     }
-
+    
     try {
       setLoading(true);
-      const response = await axios.post('/api/cart/add', {
-        productId: product.id,
-        quantity: quantity
-      });
-      
+      const response = await axios.post(
+        `/api/cart/${user.id}/add/${product.id}`,
+        null,
+        { 
+          params: {
+            quantity: quantity,
+            isUserCart: true
+          }
+        }
+      );
       await fetchCart(); // Refresh cart after adding item
       return response.data;
     } catch (error) {
-      console.error('Error adding to cart:', error);
+      console.error("Error adding to cart:", error);
       throw error;
     } finally {
       setLoading(false);
@@ -117,14 +135,15 @@ export const AppProvider = ({ children }) => {
     try {
       setLoading(true);
       const response = await axios.post("/api/auth/login", credentials);
-      const userData = response.data;
+      const { token, user: userData } = response.data;
+      localStorage.setItem('token', token);
       setUser(userData);
       return { success: true };
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error("Login error:", error.response?.data);
       return { 
         success: false, 
-        error: error.response?.data || "Invalid credentials" 
+        error: error.response?.data?.message || "Login failed" 
       };
     } finally {
       setLoading(false);
@@ -134,13 +153,22 @@ export const AppProvider = ({ children }) => {
   const signup = async (userData) => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/auth/register", userData);
-      return { success: true, data: response.data };
+      const response = await axios.post("/api/auth/register", {
+        username: userData.name,
+        email: userData.email,
+        password: userData.password
+      });
+      
+      if (response.data) {
+        return { success: true };
+      } else {
+        throw new Error("Registration failed");
+      }
     } catch (error) {
       console.error("Signup failed:", error);
       return { 
         success: false, 
-        error: error.response?.data || "Registration failed" 
+        error: error.response?.data?.message || "Registration failed" 
       };
     } finally {
       setLoading(false);
@@ -148,9 +176,10 @@ export const AppProvider = ({ children }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
     setUser(null);
     setCart([]);
-    localStorage.removeItem('user');
   };
 
   useEffect(() => {

@@ -12,6 +12,7 @@ import { CssBaseline } from '@mui/material';
 import { getTheme } from './theme';
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import Profile from "./pages/Profile";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
@@ -49,6 +50,7 @@ function App() {
             <Route path="/product/:id" element={<Product />} />
             <Route path="/cart" element={<Cart />} />
             <Route path="/product/update/:id" element={<UpdateProduct />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </BrowserRouter>
       </ThemeProvider>
