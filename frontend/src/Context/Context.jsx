@@ -57,27 +57,22 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const addToCart = async (product) => {
+  const addToCart = async (product, quantity = 1) => {
     if (!user) {
       throw new Error("Please log in to add items to cart");
     }
 
     try {
       setLoading(true);
-      const response = await axios.post(
-        `/api/cart/${user.id}/add/${product.id}`,
-        null,
-        {
-          params: {
-            quantity: 1,
-            isUserCart: true
-          }
-        }
-      );
-      console.log('Add to cart response:', response.data);
+      const response = await axios.post('/api/cart/add', {
+        productId: product.id,
+        quantity: quantity
+      });
+      
       await fetchCart(); // Refresh cart after adding item
+      return response.data;
     } catch (error) {
-      console.error("Failed to add to cart:", error);
+      console.error('Error adding to cart:', error);
       throw error;
     } finally {
       setLoading(false);

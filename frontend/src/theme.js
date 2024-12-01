@@ -4,12 +4,17 @@ export const getTheme = (mode) => createTheme({
   palette: {
     mode,
     primary: {
-      main: mode === 'dark' ? '#90caf9' : '#1976d2',
-      light: mode === 'dark' ? '#b3e5fc' : '#42a5f5',
-      dark: mode === 'dark' ? '#648dae' : '#1565c0',
+      main: mode === 'dark' ? '#90caf9' : '#2196f3',
+      light: mode === 'dark' ? '#b3e5fc' : '#64b5f6',
+      dark: mode === 'dark' ? '#648dae' : '#1976d2',
+    },
+    secondary: {
+      main: mode === 'dark' ? '#ce93d8' : '#f50057',
+      light: mode === 'dark' ? '#f3e5f5' : '#ff4081',
+      dark: mode === 'dark' ? '#ab47bc' : '#c51162',
     },
     background: {
-      default: mode === 'dark' ? '#0a1929' : '#ffffff',
+      default: mode === 'dark' ? '#0a1929' : '#f5f5f5',
       paper: mode === 'dark' ? '#101f33' : '#ffffff',
     },
     text: {
@@ -26,31 +31,51 @@ export const getTheme = (mode) => createTheme({
     MuiAppBar: {
       styleOverrides: {
         root: {
-          boxShadow: mode === 'dark' 
-            ? '0 2px 4px rgba(0,0,0,0.3)' 
-            : '0 2px 4px rgba(0,0,0,0.1)',
-          backgroundColor: mode === 'dark' ? '#101f33' : '#ffffff',
-          '& .MuiTypography-root': {
-            color: mode === 'dark' ? '#ffffff' : '#1a1a1a',
+          backdropFilter: 'blur(8px)',
+          backgroundColor: mode === 'dark' 
+            ? 'rgba(16, 31, 51, 0.95)'
+            : 'rgba(255, 255, 255, 0.95)',
+          boxShadow: mode === 'dark'
+            ? '0 2px 8px rgba(0,0,0,0.3)'
+            : '0 2px 8px rgba(0,0,0,0.1)',
+        }
+      }
+    },
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: '8px',
+          textTransform: 'none',
+          fontWeight: 600,
+          fontSize: '0.95rem',
+          padding: '6px 16px',
+          '&:hover': {
+            transform: 'translateY(-1px)',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.1)',
           },
-          '& .MuiIconButton-root': {
-            color: mode === 'dark' ? '#ffffff' : '#1a1a1a',
-          },
-          '& .MuiButton-root': {
-            color: mode === 'dark' ? '#ffffff' : '#1a1a1a',
-          }
+          transition: 'all 0.2s ease'
         },
-      },
+        contained: {
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        }
+      }
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          backgroundColor: mode === 'dark' ? '#172b3f' : '#ffffff',
+          borderRadius: '12px',
           boxShadow: mode === 'dark'
-            ? '0 4px 6px rgba(0, 0, 0, 0.4)'
-            : '0 2px 4px rgba(0, 0, 0, 0.1)',
-        },
-      },
+            ? '0 4px 12px rgba(0,0,0,0.3)'
+            : '0 4px 12px rgba(0,0,0,0.1)',
+          '&:hover': {
+            transform: 'translateY(-4px)',
+            boxShadow: mode === 'dark'
+              ? '0 8px 16px rgba(0,0,0,0.4)'
+              : '0 8px 16px rgba(0,0,0,0.15)',
+          },
+          transition: 'all 0.3s ease'
+        }
+      }
     },
     MuiPaper: {
       styleOverrides: {
@@ -63,21 +88,6 @@ export const getTheme = (mode) => createTheme({
       styleOverrides: {
         paper: {
           backgroundColor: mode === 'dark' ? '#101f33' : '#ffffff',
-        },
-      },
-    },
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          textTransform: 'none',
-        },
-        contained: {
-          boxShadow: 'none',
-          '&:hover': {
-            boxShadow: mode === 'dark' 
-              ? '0 2px 8px rgba(0, 0, 0, 0.4)'
-              : '0 2px 4px rgba(0, 0, 0, 0.2)',
-          },
         },
       },
     },
@@ -112,6 +122,28 @@ export const getTheme = (mode) => createTheme({
       },
     },
   },
+  typography: {
+    fontFamily: "'Poppins', sans-serif",
+    h1: {
+      fontWeight: 700,
+      letterSpacing: '-1px'
+    },
+    h2: {
+      fontWeight: 700,
+      letterSpacing: '-0.5px'
+    },
+    h3: {
+      fontWeight: 700,
+      letterSpacing: '-0.5px'
+    },
+    button: {
+      textTransform: 'none',
+      fontWeight: 600
+    }
+  },
+  shape: {
+    borderRadius: 8
+  }
 });
 
 export { getTheme as default }; 

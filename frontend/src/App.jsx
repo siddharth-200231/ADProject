@@ -10,35 +10,31 @@ import UpdateProduct from "./components/UpdateProduct";
 import { ThemeProvider } from '@mui/material/styles';
 import { CssBaseline } from '@mui/material';
 import { getTheme } from './theme';
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 
 function App() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [mode, setMode] = useState('light');
-  const theme = useMemo(() => getTheme(mode), [mode]);
+  const theme = useMemo(() => getTheme('dark'), []);
 
   useEffect(() => {
-    document.body.className = mode === 'dark' ? 'dark-theme' : '';
-  }, [mode]);
+    document.body.className = 'dark-theme';
+  }, []);
 
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
 
-  const toggleTheme = () => {
-    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
-  };
-
   return (
-    <div className={mode === 'dark' ? 'dark-theme' : ''}>
+    <div className="dark-theme">
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <BrowserRouter>
           <Navbar 
             onSelectCategory={handleCategorySelect} 
             onSearch={setSearchQuery}
-            onThemeToggle={toggleTheme}
-            isDarkMode={mode === 'dark'}
+            isDarkMode={true}
           />
           <Routes>
             <Route
@@ -47,6 +43,8 @@ function App() {
                 <Home selectedCategory={selectedCategory} searchQuery={searchQuery} />
               }
             />
+            <Route path="/login" element={<Login />} />
+            <Route path="/signup" element={<Signup />} />
             <Route path="/add_product" element={<AddProduct />} />
             <Route path="/product/:id" element={<Product />} />
             <Route path="/cart" element={<Cart />} />

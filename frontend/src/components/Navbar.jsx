@@ -31,6 +31,9 @@ import {
   Category as CategoryIcon,
   DarkMode,
   LightMode,
+  KeyboardArrowDown,
+  Home as HomeIcon,
+  ShoppingBag as ShoppingBagIcon,
 } from '@mui/icons-material';
 import { styled, alpha } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
@@ -41,31 +44,23 @@ import Logo from './Logo';
 // Styled components
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.mode === 'dark' 
-    ? 'rgba(255, 255, 255, 0.08)'
-    : 'rgba(0, 0, 0, 0.04)',
+  borderRadius: '12px',
+  backgroundColor: 'var(--dark-bg-elevated)',
+  border: '1px solid var(--glass-border)',
   '&:hover': {
-    backgroundColor: theme.palette.mode === 'dark'
-      ? 'rgba(255, 255, 255, 0.12)'
-      : 'rgba(0, 0, 0, 0.08)',
+    backgroundColor: 'var(--dark-bg-secondary)',
+    borderColor: 'var(--dark-text-muted)',
+  },
+  '&:focus-within': {
+    backgroundColor: 'var(--dark-bg-secondary)',
+    borderColor: 'var(--primary-color)',
+    boxShadow: '0 0 0 3px var(--primary-muted)',
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: '100%',
-  [theme.breakpoints.up('sm')]: {
-    marginLeft: theme.spacing(3),
-    width: 'auto',
-  },
-  '& .MuiInputBase-input': {
-    color: theme.palette.mode === 'dark' ? '#ffffff' : '#1a1a1a',
-    '&::placeholder': {
-      color: theme.palette.mode === 'dark' 
-        ? 'rgba(255, 255, 255, 0.6)' 
-        : 'rgba(0, 0, 0, 0.6)',
-      opacity: 1,
-    },
-  },
+  maxWidth: '500px',
+  transition: 'all 0.2s ease',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -76,22 +71,237 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  color: 'rgba(255, 255, 255, 0.5)',
+  transition: 'color 0.2s ease',
+  '.MuiInputBase-root:focus-within + &': {
+    color: '#3b82f6',
+  }
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: 'inherit',
+  width: '100%',
   '& .MuiInputBase-input': {
-    padding: theme.spacing(1, 1, 1, 0),
+    padding: '12px 16px',
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
+    fontSize: '0.95rem',
     width: '100%',
+    transition: 'all 0.2s ease',
+    '&::placeholder': {
+      color: 'rgba(255, 255, 255, 0.5)',
+      opacity: 1,
+    },
+    [theme.breakpoints.up('sm')]: {
+      width: '25ch',
+      '&:focus': {
+        width: '35ch',
+      },
+    },
     [theme.breakpoints.up('md')]: {
-      width: '20ch',
+      width: '35ch',
+      '&:focus': {
+        width: '45ch',
+      },
     },
   },
 }));
 
-const Navbar = ({ onSearch, onSelectCategory, onThemeToggle, isDarkMode }) => {
+const CategoryMenu = ({ onSelectCategory }) => {
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const open = Boolean(anchorEl);
+  
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('/api/categories');
+        // Add "All" category at the beginning
+        setCategories(['All', ...response.data]);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+        setCategories(['All']); // Fallback to at least showing "All"
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleSelect = (category) => {
+    onSelectCategory(category === 'All' ? '' : category);
+    handleClose();
+  };
+
+  return (
+    <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+      <Button
+        onClick={handleClick}
+        endIcon={<KeyboardArrowDown />}
+        disabled={loading}
+        sx={{
+          color: 'var(--dark-text-secondary)',
+          textTransform: 'none',
+          fontSize: '0.95rem',
+          '&:hover': {
+            color: 'var(--dark-text-primary)',
+            backgroundColor: 'var(--dark-hover)'
+          }
+        }}
+      >
+        Categories
+      </Button>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        PaperProps={{
+          sx: {
+            mt: 1.5,
+            background: 'var(--dark-bg-secondary)',
+            border: '1px solid var(--glass-border)',
+            boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
+            '& .MuiMenuItem-root': {
+              fontSize: '0.9rem',
+              color: 'var(--dark-text-secondary)',
+              '&:hover': {
+                backgroundColor: 'var(--dark-hover)',
+                color: 'var(--dark-text-primary)'
+              }
+            }
+          }
+        }}
+        transformOrigin={{ horizontal: 'left', vertical: 'top' }}
+        anchorOrigin={{ horizontal: 'left', vertical: 'bottom' }}
+      >
+        {loading ? (
+          <MenuItem disabled>Loading categories...</MenuItem>
+        ) : (
+          categories.map((category) => (
+            <MenuItem
+              key={category}
+              onClick={() => handleSelect(category)}
+            >
+              {category}
+            </MenuItem>
+          ))
+        )}
+      </Menu>
+    </Box>
+  );
+};
+
+const MobileMenu = ({ onClose, onSelectCategory }) => {
+  const navigate = useNavigate();
+  const { user, logout } = useContext(AppContext);
+
+  const handleNavigation = (path) => {
+    navigate(path);
+    onClose();
+  };
+
+  return (
+    <Box sx={{ width: 250, pt: 2 }}>
+      <List>
+        <ListItem button onClick={() => handleNavigation('/')}>
+          <ListItemIcon>
+            <HomeIcon />
+          </ListItemIcon>
+          <ListItemText primary="Home" />
+        </ListItem>
+
+        <ListItem button onClick={() => handleNavigation('/cart')}>
+          <ListItemIcon>
+            <ShoppingBagIcon />
+          </ListItemIcon>
+          <ListItemText primary="Cart" />
+        </ListItem>
+
+        {user && (
+          <ListItem button onClick={() => handleNavigation('/add_product')}>
+            <ListItemIcon>
+              <AddIcon />
+            </ListItemIcon>
+            <ListItemText primary="Add Product" />
+          </ListItem>
+        )}
+
+        <Divider sx={{ my: 1 }} />
+
+        {/* Categories Section */}
+        <ListItem>
+          <ListItemIcon>
+            <CategoryIcon />
+          </ListItemIcon>
+          <ListItemText primary="Categories" />
+        </ListItem>
+        
+        {["All", "Electronics", "Fashion", "Home & Living", "Books", "Sports", "Beauty", "Toys"].map((category) => (
+          <ListItem 
+            button 
+            key={category}
+            onClick={() => {
+              onSelectCategory(category);
+              onClose();
+            }}
+            sx={{ pl: 4 }}
+          >
+            <ListItemText primary={category} />
+          </ListItem>
+        ))}
+
+        <Divider sx={{ my: 1 }} />
+
+        {user ? (
+          <>
+            <ListItem>
+              <ListItemIcon>
+                <PersonIcon />
+              </ListItemIcon>
+              <ListItemText 
+                primary={user.name}
+                secondary={user.email}
+                primaryTypographyProps={{ noWrap: true }}
+                secondaryTypographyProps={{ noWrap: true }}
+              />
+            </ListItem>
+            <ListItem 
+              button 
+              onClick={() => {
+                logout();
+                onClose();
+              }}
+            >
+              <ListItemIcon>
+                <LogoutIcon />
+              </ListItemIcon>
+              <ListItemText primary="Logout" />
+            </ListItem>
+          </>
+        ) : (
+          <ListItem button onClick={() => handleNavigation('/login')}>
+            <ListItemIcon>
+              <LoginIcon />
+            </ListItemIcon>
+            <ListItemText primary="Login" />
+          </ListItem>
+        )}
+      </List>
+    </Box>
+  );
+};
+
+const Navbar = ({ onSearch, onSelectCategory }) => {
   const { user, cart, logout } = useContext(AppContext);
   const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = useState(null);
@@ -101,6 +311,7 @@ const Navbar = ({ onSearch, onSelectCategory, onThemeToggle, isDarkMode }) => {
   const [categories, setCategories] = useState(['All Categories']);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [loading, setLoading] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -152,192 +363,118 @@ const Navbar = ({ onSearch, onSelectCategory, onThemeToggle, isDarkMode }) => {
   };
 
   return (
-    <AppBar 
-      position="sticky" 
-      sx={{ 
-        bgcolor: 'background.paper',
-        borderBottom: (theme) => `1px solid ${theme.palette.divider}`,
-      }}
-    >
+    <AppBar position="sticky" className="navbar">
       <Container maxWidth="xl">
-        <Toolbar disableGutters>
+        <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
           {/* Mobile Menu Icon */}
-          <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-            <IconButton
-              size="large"
-              onClick={() => setDrawerOpen(true)}
-              color="inherit"
-            >
-              <MenuIcon />
-            </IconButton>
-          </Box>
+          <IconButton
+            sx={{ display: { md: 'none' } }}
+            onClick={() => setMobileOpen(true)}
+          >
+            <MenuIcon />
+          </IconButton>
 
           {/* Logo */}
-          <Box
+          <Typography
+            variant="h6"
+            noWrap
             component={Link}
             to="/"
             sx={{
-              mr: 2,
-              display: { xs: 'none', md: 'flex' },
+              display: { xs: 'none', sm: 'flex' },
+              fontWeight: 700,
+              color: 'inherit',
               textDecoration: 'none',
+              fontSize: { sm: '1.2rem', md: '1.5rem' }
             }}
           >
-            <Logo />
+            SHOPKART
+          </Typography>
+
+          {/* Search Bar - Hide on mobile */}
+          <Box sx={{ 
+            flexGrow: 1, 
+            maxWidth: '600px', 
+            mx: { sm: 4, md: 8 },
+            display: { xs: 'none', sm: 'block' } 
+          }}>
+            <Search>
+              <SearchIconWrapper>
+                <SearchIcon />
+              </SearchIconWrapper>
+              <StyledInputBase
+                placeholder="Search products..."
+                inputProps={{ 'aria-label': 'search' }}
+              />
+            </Search>
           </Box>
 
-          {/* Mobile Logo */}
-          <Box
-            component={Link}
-            to="/"
-            sx={{
-              flexGrow: 1,
-              display: { xs: 'flex', md: 'none' },
-              textDecoration: 'none',
-            }}
-          >
-            <Logo />
-          </Box>
+          {/* Add CategoryMenu here */}
+          <CategoryMenu onSelectCategory={onSelectCategory} />
 
-          {/* Search Bar */}
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-              placeholder="Search products..."
-              value={searchQuery}
-              onChange={handleSearch}
-              inputProps={{ 'aria-label': 'search' }}
-            />
-          </Search>
-
-          {/* Desktop Navigation */}
-          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, ml: 4 }}>
-            {categories.map((category) => (
-              <Button
-                key={category}
-                onClick={() => handleCategorySelect(category)}
-                sx={{
-                  color: 'text.primary',
-                  display: 'block',
-                  fontWeight: selectedCategory === category ? 700 : 400,
-                  borderBottom: selectedCategory === category ? 2 : 0,
-                  borderColor: 'primary.main',
-                  borderRadius: 0,
-                  px: 2
-                }}
-              >
-                {category}
-              </Button>
-            ))}
-          </Box>
-
-          {/* Cart & User Menu */}
-          <Box sx={{ flexGrow: 0, display: 'flex', alignItems: 'center', gap: 2 }}>
+          {/* Action Buttons */}
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1, sm: 2 } }}>
+            {/* Cart Icon */}
             <IconButton
               component={Link}
               to="/cart"
-              color="inherit"
-              sx={{ position: 'relative' }}
+              sx={{
+                p: { xs: 0.5, sm: 1 },
+                '&:hover': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                  transform: 'translateY(-2px)',
+                },
+              }}
             >
-              <Badge badgeContent={cart.length} color="primary">
-                <ShoppingCartIcon />
+              <Badge 
+                badgeContent={cart.length} 
+                color="primary"
+                sx={{
+                  '& .MuiBadge-badge': {
+                    fontSize: { xs: '0.65rem', sm: '0.75rem' },
+                    minWidth: { xs: '18px', sm: '20px' },
+                    height: { xs: '18px', sm: '20px' },
+                  }
+                }}
+              >
+                <ShoppingCartIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />
               </Badge>
             </IconButton>
 
+            {/* User Menu */}
             {user ? (
-              <>
-                <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu}>
-                    <Avatar alt={user.name} src={user.avatar} />
-                  </IconButton>
-                </Tooltip>
-                <Menu
-                  anchorEl={anchorElUser}
-                  open={Boolean(anchorElUser)}
-                  onClose={handleCloseUserMenu}
-                  transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                  anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                >
-                  <MenuItem component={Link} to="/profile">
-                    <ListItemIcon>
-                      <PersonIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Profile</ListItemText>
-                  </MenuItem>
-                  <MenuItem component={Link} to="/add_product">
-                    <ListItemIcon>
-                      <AddIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Add Product</ListItemText>
-                  </MenuItem>
-                  <Divider />
-                  <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                      <LogoutIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Logout</ListItemText>
-                  </MenuItem>
-                </Menu>
-              </>
+              <UserMenu user={user} onLogout={handleLogout} />
             ) : (
               <Button
                 component={Link}
                 to="/login"
-                startIcon={<LoginIcon />}
                 variant="contained"
-                color="primary"
+                sx={{
+                  display: { xs: 'none', sm: 'flex' },
+                  fontSize: { sm: '0.8rem', md: '0.9rem' }
+                }}
               >
                 Login
               </Button>
             )}
           </Box>
-
-          {/* Add Theme Toggle Button */}
-          <IconButton
-            onClick={onThemeToggle}
-            color="inherit"
-            sx={{ ml: 2 }}
-          >
-            {isDarkMode ? <LightMode /> : <DarkMode />}
-          </IconButton>
         </Toolbar>
       </Container>
 
-      {/* Mobile Category Drawer */}
+      {/* Mobile Drawer */}
       <Drawer
         anchor="left"
-        open={drawerOpen}
-        onClose={() => setDrawerOpen(false)}
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        sx={{
+          '& .MuiDrawer-paper': {
+            width: '80%',
+            maxWidth: '300px',
+            background: 'var(--dark-bg-secondary)',
+          }
+        }}
       >
-        <Box
-          sx={{ width: 250 }}
-          role="presentation"
-        >
-          <List>
-            <ListItem>
-              <Typography variant="h6" sx={{ fontWeight: 700 }}>
-                Categories
-              </Typography>
-            </ListItem>
-            <Divider />
-            {categories.map((category) => (
-              <ListItem
-                key={category}
-                button
-                onClick={() => handleCategorySelect(category)}
-                sx={{
-                  bgcolor: selectedCategory === category ? 'action.selected' : 'transparent'
-                }}
-              >
-                <ListItemIcon>
-                  <CategoryIcon />
-                </ListItemIcon>
-                <ListItemText primary={category} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        <MobileMenu onClose={() => setMobileOpen(false)} onSelectCategory={onSelectCategory} />
       </Drawer>
     </AppBar>
   );
