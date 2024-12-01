@@ -10,6 +10,6 @@ import com.adp.backend.models.User;
 
 @Repository
 public interface CartRepository extends JpaRepository<Cart, Long> {
-    Optional<Cart> findByUser_IdAndUserCart(Long userId, boolean userCart);
-    Optional<Cart> findByUser_IdAndUserCart(User user, boolean userCart);
+    Optional<Cart> findByUser(User user);
+    Optional<Cart> findByUser_IdAndIsUserCart(Long userId, boolean isUserCart);
 } 
