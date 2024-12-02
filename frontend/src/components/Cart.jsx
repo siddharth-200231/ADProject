@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import AppContext from '../Context/Context';
-import CheckoutPopup from './CheckoutPopup';
+import CheckoutDialog from './CheckoutDialog';
 import {
   Box,
   Container,
@@ -23,15 +23,16 @@ import axios from '../axios';
 
 const Cart = () => {
   const { cart, removeFromCart } = useContext(AppContext);
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { showSuccess, showError } = useNotification();
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
   };
 
-  const handleCheckout = async () => {
-    setShowCheckout(false);
+  const handlePurchase = async () => {
+    setLoading(true);
     try {
       const userId = JSON.parse(localStorage.getItem('user')).id;
       const response = await axios.post(`/api/cart/${userId}/purchase`);
@@ -45,6 +46,8 @@ const Cart = () => {
     } catch (error) {
       console.error('Purchase error:', error);
       showError(error.response?.data?.message || 'Failed to complete purchase. Please try again.');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -183,7 +186,7 @@ const Cart = () => {
               variant="contained" 
               fullWidth 
               size="large"
-              onClick={() => setShowCheckout(true)}
+              onClick={() => setCheckoutOpen(true)}
               sx={{ 
                 mt: 2,
                 py: 1.5,
@@ -201,12 +204,12 @@ const Cart = () => {
         </Grid>
       </Grid>
 
-      <CheckoutPopup
-        show={showCheckout}
-        handleClose={() => setShowCheckout(false)}
-        cartItems={cart}
-        totalPrice={calculateTotal()}
-        handleCheckout={handleCheckout}
+      <CheckoutDialog
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        cart={cart}
+        onPurchase={handlePurchase}
+        loading={loading}
       />
     </Container>
   );
