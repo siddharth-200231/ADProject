@@ -34,23 +34,14 @@ const Home = ({ selectedCategory, searchQuery }) => {
   }, []);
 
   // Filter products based on category and search query
-  const filteredProducts = products.filter(product => {
-    let matches = true;
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = !searchQuery || 
+      (product.name && product.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (product.description && product.description.toLowerCase().includes(searchQuery.toLowerCase()));
     
-    if (selectedCategory && selectedCategory !== 'All Categories') {
-      matches = matches && product.category === selectedCategory;
-    }
-    
-    if (searchQuery) {
-      const query = searchQuery.toLowerCase();
-      matches = matches && (
-        product.name.toLowerCase().includes(query) ||
-        product.description.toLowerCase().includes(query) ||
-        product.brand.toLowerCase().includes(query)
-      );
-    }
-    
-    return matches;
+    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+  
+    return matchesSearch && matchesCategory;
   });
 
   if (loading) {

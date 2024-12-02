@@ -444,6 +444,13 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
               <StyledInputBase
                 placeholder="Search products..."
                 inputProps={{ 'aria-label': 'search' }}
+                value={searchQuery}
+                onChange={handleSearch}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    onSearch(searchQuery);
+                  }
+                }}
               />
             </Search>
           </Box>
