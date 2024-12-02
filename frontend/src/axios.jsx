@@ -23,9 +23,12 @@ API.interceptors.request.use(
 API.interceptors.response.use(
     response => response,
     error => {
-        if (error.response?.status === 401) {
+        if (error.response?.status === 401 || 
+            error.response?.data?.message?.includes('JWT expired')) {
+            // Clear stored data
             localStorage.removeItem('token');
             localStorage.removeItem('user');
+            // Redirect to login
             window.location.href = '/login';
         }
         return Promise.reject(error);

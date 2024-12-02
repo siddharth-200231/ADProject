@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import AppContext from '../Context/Context';
+import { useNotification } from '../hooks/useNotification';
 import { 
     Card as MuiCard,
     CardContent,
@@ -21,6 +23,23 @@ import { useNavigate } from 'react-router-dom';
 const Card = ({ product }) => {
     const navigate = useNavigate();
     const [isFavorite, setIsFavorite] = React.useState(false);
+    const { addToCart, user } = useContext(AppContext);
+    const { showSuccess, showError } = useNotification();
+
+    const handleAddToCart = async () => {
+        if (!user) {
+            navigate('/login');
+            return;
+        }
+
+        try {
+            await addToCart(product, 1);
+            showSuccess('Added to cart successfully!');
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+            showError(error.response?.data?.message || 'Failed to add to cart');
+        }
+    };
 
     return (
         <MuiCard 
@@ -155,12 +174,14 @@ const Card = ({ product }) => {
                     size="small"
                     variant="contained"
                     startIcon={<CartIcon />}
+                    onClick={handleAddToCart}
+                    disabled={!product.available}
                     sx={{
                         borderRadius: 2,
                         textTransform: 'none'
                     }}
                 >
-                    Add to Cart
+                    {product.available ? 'Add to Cart' : 'Out of Stock'}
                 </Button>
             </CardActions>
         </MuiCard>
