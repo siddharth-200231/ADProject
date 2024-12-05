@@ -48,10 +48,13 @@ const Card = ({ product }) => {
                 display: 'flex', 
                 flexDirection: 'column',
                 position: 'relative',
-                transition: 'transform 0.2s, box-shadow 0.2s',
+                transition: 'transform 0.3s, box-shadow 0.3s',
+                backgroundColor: '#ffffff',
+                borderRadius: 2,
+                boxShadow: (theme) => theme.shadows[4],
                 '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: (theme) => theme.shadows[4]
+                    transform: 'scale(1.05)',
+                    boxShadow: (theme) => theme.shadows[10]
                 }
             }}
         >
@@ -59,10 +62,14 @@ const Card = ({ product }) => {
             <IconButton 
                 sx={{ 
                     position: 'absolute', 
-                    right: 8, 
-                    top: 8,
-                    bgcolor: 'background.paper',
-                    '&:hover': { bgcolor: 'background.paper' }
+                    right: 16, 
+                    top: 16,
+                    bgcolor: 'rgba(255, 255, 255, 0.8)',
+                    transition: 'transform 0.2s',
+                    '&:hover': { 
+                        bgcolor: 'rgba(255, 255, 255, 1)',
+                        transform: 'scale(1.1)'
+                    }
                 }}
                 onClick={() => setIsFavorite(!isFavorite)}
             >
@@ -75,13 +82,13 @@ const Card = ({ product }) => {
             {/* Product Image */}
             <CardMedia
                 component="img"
-                height="200"
+                height="220"
                 image={product.imageUrl || `https://via.placeholder.com/300?text=${product.name}`}
                 alt={product.name}
                 sx={{ 
                     objectFit: 'cover',
-                    borderBottom: '1px solid',
-                    borderColor: 'divider'
+                    borderRadius: 2,
+                    borderBottom: '1px solid #e0e0e0'
                 }}
             />
 
@@ -93,7 +100,8 @@ const Card = ({ product }) => {
                             label={product.category} 
                             size="small" 
                             color="primary" 
-                            variant="outlined"
+                            variant="filled"
+                            sx={{ borderRadius: 1 }}
                         />
                     )}
                     {product.brand && (
@@ -101,7 +109,8 @@ const Card = ({ product }) => {
                             label={product.brand} 
                             size="small" 
                             color="secondary" 
-                            variant="outlined"
+                            variant="filled"
+                            sx={{ borderRadius: 1 }}
                         />
                     )}
                 </Box>
@@ -109,18 +118,19 @@ const Card = ({ product }) => {
                 {/* Product Name */}
                 <Typography 
                     gutterBottom 
-                    variant="h6" 
+                    variant="h5" 
                     component="h2"
                     sx={{ 
-                        fontWeight: 600,
-                        fontSize: '1.1rem',
-                        lineHeight: 1.3,
-                        height: '2.6rem',
+                        fontWeight: 700,
+                        fontSize: '1.4rem',
+                        lineHeight: 1.4,
+                        height: '2.8rem',
                         overflow: 'hidden',
                         textOverflow: 'ellipsis',
                         display: '-webkit-box',
                         WebkitLineClamp: 2,
-                        WebkitBoxOrient: 'vertical'
+                        WebkitBoxOrient: 'vertical',
+                        color: 'text.primary'
                     }}
                 >
                     {product.name}
@@ -160,25 +170,35 @@ const Card = ({ product }) => {
 
             <CardActions sx={{ p: 2, pt: 0, justifyContent: 'space-between' }}>
                 <Button 
-                    size="small" 
+                    size="medium" 
                     variant="outlined"
                     onClick={() => navigate(`/product/${product.id}`)}
                     sx={{
-                        borderRadius: 2,
-                        textTransform: 'none'
+                        borderRadius: 1,
+                        textTransform: 'none',
+                        borderColor: 'primary.main',
+                        color: 'primary.main',
+                        '&:hover': {
+                            backgroundColor: 'primary.light',
+                            borderColor: 'primary.dark',
+                        }
                     }}
                 >
                     View Details
                 </Button>
                 <Button
-                    size="small"
+                    size="medium"
                     variant="contained"
                     startIcon={<CartIcon />}
                     onClick={handleAddToCart}
                     disabled={!product.available}
                     sx={{
-                        borderRadius: 2,
-                        textTransform: 'none'
+                        borderRadius: 1,
+                        textTransform: 'none',
+                        background: product.available ? 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' : 'grey.400',
+                        '&:hover': {
+                            background: product.available ? 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)' : 'grey.500',
+                        }
                     }}
                 >
                     {product.available ? 'Add to Cart' : 'Out of Stock'}

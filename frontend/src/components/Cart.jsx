@@ -20,6 +20,7 @@ import {
 } from '@mui/icons-material';
 import { useNotification } from '../hooks/useNotification';
 import axios from '../axios';
+import { teal, orange } from '@mui/material/colors';
 
 const Cart = () => {
   const { cart, removeFromCart } = useContext(AppContext);
@@ -80,15 +81,15 @@ const Cart = () => {
   return (
     <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
       <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <ShoppingCart sx={{ fontSize: 32, color: 'primary.main' }} />
-        <Typography variant="h4">
+        <ShoppingCart sx={{ fontSize: 32, color: teal[600] }} />
+        <Typography variant="h4" color={teal[800]}>
           Shopping Cart
         </Typography>
       </Box>
 
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          <Paper elevation={2} sx={{ p: 2, mb: 2 }}>
+          <Paper elevation={2} sx={{ p: 2, mb: 2, bgcolor: orange[50] }}>
             {cart.map((item) => (
               <Card 
                 key={item.id} 
@@ -97,7 +98,8 @@ const Cart = () => {
                   '&:last-child': { mb: 0 },
                   transition: 'transform 0.2s',
                   '&:hover': {
-                    transform: 'translateY(-2px)'
+                    transform: 'translateY(-2px)',
+                    boxShadow: 3
                   }
                 }}
               >
@@ -125,7 +127,7 @@ const Cart = () => {
                           <Typography variant="subtitle2" color="text.secondary" gutterBottom>
                             {item.product.brand}
                           </Typography>
-                          <Typography variant="h6" color="primary" gutterBottom>
+                          <Typography variant="h6" color={teal[600]} gutterBottom>
                             ₹{item.product.price}
                           </Typography>
                           <Typography variant="body2" sx={{ mt: 1 }}>
@@ -155,10 +157,10 @@ const Cart = () => {
               p: 3, 
               position: 'sticky', 
               top: 24,
-              bgcolor: 'background.paper' 
+              bgcolor: orange[100]
             }}
           >
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" gutterBottom color={teal[800]}>
               Order Summary
             </Typography>
             <Divider sx={{ my: 2 }} />
@@ -177,7 +179,7 @@ const Cart = () => {
             
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
               <Typography variant="h6">Total Amount</Typography>
-              <Typography variant="h6" color="primary">
+              <Typography variant="h6" color={teal[600]}>
                 ₹{calculateTotal()}
               </Typography>
             </Box>
@@ -191,8 +193,9 @@ const Cart = () => {
                 mt: 2,
                 py: 1.5,
                 fontWeight: 'bold',
-                boxShadow: 2,
+                bgcolor: teal[600],
                 '&:hover': {
+                  bgcolor: teal[700],
                   transform: 'translateY(-1px)',
                   boxShadow: 3
                 }

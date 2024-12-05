@@ -4,21 +4,21 @@ export const getTheme = (mode) => createTheme({
   palette: {
     mode,
     primary: {
-      main: mode === 'dark' ? '#90caf9' : '#2196f3',
-      light: mode === 'dark' ? '#b3e5fc' : '#64b5f6',
-      dark: mode === 'dark' ? '#648dae' : '#1976d2',
+      main: mode === 'dark' ? '#ff5722' : '#ff9800',
+      light: mode === 'dark' ? '#ff8a3d' : '#ffb74d',
+      dark: mode === 'dark' ? '#c41c00' : '#f57c00',
     },
     secondary: {
-      main: mode === 'dark' ? '#ce93d8' : '#f50057',
-      light: mode === 'dark' ? '#f3e5f5' : '#ff4081',
-      dark: mode === 'dark' ? '#ab47bc' : '#c51162',
+      main: mode === 'dark' ? '#03a9f4' : '#2196f3',
+      light: mode === 'dark' ? '#67daff' : '#6ec6ff',
+      dark: mode === 'dark' ? '#007ac1' : '#1976d2',
     },
     background: {
-      default: mode === 'dark' ? '#0a1929' : '#f5f5f5',
-      paper: mode === 'dark' ? '#101f33' : '#ffffff',
+      default: mode === 'dark' ? '#121212' : '#ffffff',
+      paper: mode === 'dark' ? '#1e1e1e' : '#f5f5f5',
     },
     text: {
-      primary: mode === 'dark' ? '#ffffff' : '#1a1a1a',
+      primary: mode === 'dark' ? '#ffffff' : '#000000',
       secondary: mode === 'dark' ? '#b0bec5' : '#424242',
     },
     action: {

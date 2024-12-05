@@ -49,7 +49,8 @@ const Search = styled('div')(({ theme }) => ({
   border: '1px solid var(--glass-border)',
   '&:hover': {
     backgroundColor: 'var(--dark-bg-secondary)',
-    borderColor: 'var(--dark-text-muted)',
+    borderColor: 'var(--primary-color)',
+    boxShadow: '0 0 10px var(--primary-muted)',
   },
   '&:focus-within': {
     backgroundColor: 'var(--dark-bg-secondary)',
@@ -150,12 +151,14 @@ const CategoryMenu = ({ onSelectCategory }) => {
         endIcon={<KeyboardArrowDown />}
         disabled={loading}
         sx={{
-          color: 'var(--dark-text-secondary)',
+          color: 'var(--primary-color)',
           textTransform: 'none',
-          fontSize: '0.95rem',
+          fontSize: '1rem',
+          fontWeight: 'bold',
           '&:hover': {
-            color: 'var(--dark-text-primary)',
-            backgroundColor: 'var(--dark-hover)'
+            color: 'var(--primary-dark)',
+            backgroundColor: 'var(--dark-hover)',
+            transform: 'scale(1.05)',
           }
         }}
       >
@@ -168,15 +171,16 @@ const CategoryMenu = ({ onSelectCategory }) => {
         PaperProps={{
           sx: {
             mt: 1.5,
-            background: 'var(--dark-bg-secondary)',
+            background: 'linear-gradient(135deg, var(--dark-bg-secondary), var(--dark-bg-primary))',
             border: '1px solid var(--glass-border)',
             boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
             '& .MuiMenuItem-root': {
               fontSize: '0.9rem',
               color: 'var(--dark-text-secondary)',
               '&:hover': {
-                backgroundColor: 'var(--dark-hover)',
-                color: 'var(--dark-text-primary)'
+                backgroundColor: 'var(--primary-light)',
+                color: 'var(--dark-text-primary)',
+                transform: 'translateX(5px)',
               }
             }
           }
@@ -402,7 +406,7 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
   };
 
   return (
-    <AppBar position="sticky" className="navbar">
+    <AppBar position="sticky" className="navbar" sx={{ background: 'linear-gradient(135deg, var(--dark-bg-primary), var(--dark-bg-secondary))' }}>
       <Container maxWidth="xl">
         <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
           {/* Mobile Menu Icon */}
@@ -435,7 +439,10 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
             flexGrow: 1, 
             maxWidth: '600px', 
             mx: { sm: 4, md: 8 },
-            display: { xs: 'none', sm: 'block' } 
+            display: { xs: 'none', sm: 'block' },
+            '&:hover': {
+              boxShadow: '0 0 15px var(--primary-muted)',
+            }
           }}>
             <Search>
               <SearchIconWrapper>
@@ -466,8 +473,8 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
               sx={{
                 p: { xs: 0.5, sm: 1 },
                 '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                  transform: 'translateY(-2px)',
+                  backgroundColor: 'var(--primary-light)',
+                  transform: 'translateY(-3px)',
                 },
               }}
             >
@@ -495,7 +502,7 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                     p: 0.5,
                     border: '2px solid',
                     borderColor: 'primary.main',
-                    '&:hover': { transform: 'scale(1.05)' }
+                    '&:hover': { transform: 'scale(1.15)' }
                   }}
                 >
                   <Avatar sx={{ width: 32, height: 32 }}>
@@ -516,7 +523,11 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                 variant="contained"
                 sx={{
                   display: { xs: 'none', sm: 'flex' },
-                  fontSize: { sm: '0.8rem', md: '0.9rem' }
+                  fontSize: { sm: '0.8rem', md: '0.9rem' },
+                  '&:hover': {
+                    backgroundColor: 'var(--primary-dark)',
+                    transform: 'translateY(-2px)',
+                  }
                 }}
               >
                 Login
@@ -535,7 +546,10 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
           '& .MuiDrawer-paper': {
             width: '80%',
             maxWidth: '300px',
-            background: 'var(--dark-bg-secondary)',
+            background: 'linear-gradient(135deg, var(--dark-bg-secondary), var(--dark-bg-primary))',
+            '&:hover': {
+              boxShadow: '0 0 15px var(--primary-muted)',
+            }
           }
         }}
       >
