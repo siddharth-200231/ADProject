@@ -97,17 +97,14 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const removeFromCart = async (cartItemId) => {
-    if (!user) return;
-    
+  const removeFromCart = async (itemId) => {
     try {
-      setLoading(true);
-      await axios.delete(`/api/cart/item/${cartItemId}`);
-      await fetchCart(); // Refresh cart after removing item
+      await axios.delete(`/api/cart/item/${itemId}`);
+      // Update local cart state after successful removal
+      setCart(prevCart => prevCart.filter(item => item.id !== itemId));
     } catch (error) {
-      console.error("Failed to remove from cart:", error);
-    } finally {
-      setLoading(false);
+      console.error('Error removing item from cart:', error);
+      throw error;
     }
   };
 
