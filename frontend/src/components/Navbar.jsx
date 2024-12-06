@@ -34,6 +34,7 @@ import {
   KeyboardArrowDown,
   Home as HomeIcon,
   ShoppingBag as ShoppingBagIcon,
+  ShoppingBag,
 } from '@mui/icons-material';
 import { styled, alpha } from '@mui/material/styles';
 import { Link, useNavigate } from 'react-router-dom';
@@ -418,21 +419,69 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
           </IconButton>
 
           {/* Logo */}
-          <Typography
-            variant="h6"
-            noWrap
-            component={Link}
-            to="/"
+          <Box
             sx={{
               display: { xs: 'none', sm: 'flex' },
-              fontWeight: 700,
-              color: 'inherit',
-              textDecoration: 'none',
-              fontSize: { sm: '1.2rem', md: '1.5rem' }
+              alignItems: 'center',
+              gap: 1,
             }}
           >
-            SHOPKART
-          </Typography>
+            <ShoppingBag 
+              sx={{ 
+                fontSize: { sm: '1.8rem', md: '2.2rem' },
+                color: '#FF6B6B',
+                animation: 'bounce 2s infinite',
+                '@keyframes bounce': {
+                  '0%, 100%': {
+                    transform: 'translateY(0)',
+                  },
+                  '50%': {
+                    transform: 'translateY(-5px)',
+                  },
+                },
+              }} 
+            />
+            <Typography
+              variant="h6"
+              noWrap
+              component={Link}
+              to="/"
+              sx={{
+                fontFamily: "'Poppins', sans-serif",
+                fontWeight: 800,
+                background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                letterSpacing: '1px',
+                fontSize: { sm: '1.4rem', md: '1.8rem' },
+                textDecoration: 'none',
+                position: 'relative',
+                '&::after': {
+                  content: '""',
+                  position: 'absolute',
+                  bottom: -4,
+                  left: 0,
+                  width: '100%',
+                  height: '2px',
+                  background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+                  transform: 'scaleX(0)',
+                  transition: 'transform 0.3s ease',
+                  transformOrigin: 'right',
+                },
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  '&::after': {
+                    transform: 'scaleX(1)',
+                    transformOrigin: 'left',
+                  }
+                },
+                transition: 'transform 0.3s ease',
+              }}
+            >
+              TechBazaar
+            </Typography>
+          </Box>
 
           {/* Search Bar - Hide on mobile */}
           <Box sx={{ 

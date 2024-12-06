@@ -56,22 +56,25 @@ const Cart = () => {
     return (
       <Container maxWidth="md" sx={{ mt: 8, mb: 4, minHeight: '60vh' }}>
         <Paper 
-          elevation={3} 
+          elevation={6} 
           sx={{ 
-            p: 4, 
+            p: 6, 
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 2
+            gap: 3,
+            borderRadius: 4,
+            background: `linear-gradient(145deg, ${teal[50]}, ${orange[50]})`,
           }}
         >
-          <RemoveShoppingCart sx={{ fontSize: 60, color: 'text.secondary' }} />
-          <Typography variant="h5" gutterBottom>
+          <RemoveShoppingCart sx={{ fontSize: 80, color: teal[300] }} />
+          <Typography variant="h4" gutterBottom fontWeight="bold" color={teal[800]}>
             Your cart is empty
           </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Add some products to your cart to see them here!
+          <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 500 }}>
+            Looks like you haven't added anything to your cart yet.
+            Explore our products and find something you love!
           </Typography>
         </Paper>
       </Container>
@@ -79,32 +82,46 @@ const Cart = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 8 }}>
-      <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', gap: 2 }}>
-        <ShoppingCart sx={{ fontSize: 32, color: teal[600] }} />
-        <Typography variant="h4" color={teal[800]}>
+    <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
+      <Box sx={{ 
+        mb: 5, 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: 2,
+        p: 3,
+        borderRadius: 2,
+        background: `linear-gradient(90deg, ${teal[50]}, ${orange[50]})`,
+      }}>
+        <ShoppingCart sx={{ fontSize: 40, color: teal[600] }} />
+        <Typography variant="h3" fontWeight="bold" color={teal[800]}>
           Shopping Cart
         </Typography>
       </Box>
 
       <Grid container spacing={4}>
         <Grid item xs={12} md={8}>
-          <Paper elevation={2} sx={{ p: 2, mb: 2, bgcolor: orange[50] }}>
+          <Paper elevation={3} sx={{ 
+            p: 3, 
+            mb: 2, 
+            borderRadius: 3,
+            background: `linear-gradient(145deg, ${orange[50]}, #ffffff)`,
+          }}>
             {cart.map((item) => (
               <Card 
                 key={item.id} 
                 sx={{ 
-                  mb: 2, 
+                  mb: 3, 
+                  borderRadius: 2,
                   '&:last-child': { mb: 0 },
-                  transition: 'transform 0.2s',
+                  transition: 'all 0.3s ease',
                   '&:hover': {
-                    transform: 'translateY(-2px)',
-                    boxShadow: 3
+                    transform: 'translateY(-4px)',
+                    boxShadow: 6
                   }
                 }}
               >
-                <CardContent>
-                  <Grid container spacing={2} alignItems="center">
+                <CardContent sx={{ p: 3 }}>
+                  <Grid container spacing={3} alignItems="center">
                     <Grid item xs={12} sm={3}>
                       <Box
                         component="img"
@@ -113,31 +130,46 @@ const Cart = () => {
                         sx={{
                           width: '100%',
                           height: 'auto',
-                          borderRadius: 1,
-                          objectFit: 'cover'
+                          borderRadius: 2,
+                          objectFit: 'cover',
+                          boxShadow: 2
                         }}
                       />
                     </Grid>
                     <Grid item xs={12} sm={9}>
                       <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                         <Box>
-                          <Typography variant="h6" gutterBottom>
+                          <Typography variant="h5" fontWeight="bold" gutterBottom>
                             {item.product.name}
                           </Typography>
-                          <Typography variant="subtitle2" color="text.secondary" gutterBottom>
+                          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
                             {item.product.brand}
                           </Typography>
-                          <Typography variant="h6" color={teal[600]} gutterBottom>
-                            ₹{item.product.price}
+                          <Typography variant="h5" color={teal[600]} fontWeight="bold" gutterBottom>
+                            ₹{item.product.price.toLocaleString()}
                           </Typography>
-                          <Typography variant="body2" sx={{ mt: 1 }}>
-                            Quantity: {item.quantity}
-                          </Typography>
+                          <Box sx={{ 
+                            mt: 2, 
+                            p: 1, 
+                            borderRadius: 1, 
+                            bgcolor: teal[50],
+                            display: 'inline-block'
+                          }}>
+                            <Typography variant="body1" fontWeight="medium">
+                              Quantity: {item.quantity}
+                            </Typography>
+                          </Box>
                         </Box>
                         <IconButton 
                           onClick={() => removeFromCart(item.id)}
                           color="error"
-                          sx={{ alignSelf: 'flex-start' }}
+                          sx={{ 
+                            alignSelf: 'flex-start',
+                            '&:hover': {
+                              transform: 'scale(1.1)',
+                              bgcolor: 'error.light'
+                            }
+                          }}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -152,18 +184,19 @@ const Cart = () => {
 
         <Grid item xs={12} md={4}>
           <Paper 
-            elevation={3} 
+            elevation={4} 
             sx={{ 
-              p: 3, 
+              p: 4, 
               position: 'sticky', 
               top: 24,
-              bgcolor: orange[100]
+              borderRadius: 3,
+              background: `linear-gradient(145deg, ${orange[100]}, ${teal[50]})`,
             }}
           >
-            <Typography variant="h6" gutterBottom color={teal[800]}>
+            <Typography variant="h5" gutterBottom color={teal[800]} fontWeight="bold">
               Order Summary
             </Typography>
-            <Divider sx={{ my: 2 }} />
+            <Divider sx={{ my: 3 }} />
             
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
               <Typography>Items ({cart.length})</Typography>
@@ -190,15 +223,18 @@ const Cart = () => {
               size="large"
               onClick={() => setCheckoutOpen(true)}
               sx={{ 
-                mt: 2,
-                py: 1.5,
+                mt: 3,
+                py: 2,
+                fontSize: '1.1rem',
                 fontWeight: 'bold',
+                borderRadius: 2,
                 bgcolor: teal[600],
                 '&:hover': {
                   bgcolor: teal[700],
-                  transform: 'translateY(-1px)',
-                  boxShadow: 3
-                }
+                  transform: 'translateY(-2px)',
+                  boxShadow: 4
+                },
+                transition: 'all 0.3s ease'
               }}
             >
               Proceed to Checkout
