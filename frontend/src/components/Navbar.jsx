@@ -152,14 +152,32 @@ const CategoryMenu = ({ onSelectCategory }) => {
         endIcon={<KeyboardArrowDown />}
         disabled={loading}
         sx={{
-          color: 'var(--primary-color)',
+          color: 'rgba(255, 255, 255, 0.9)',
           textTransform: 'none',
           fontSize: '1rem',
           fontWeight: 'bold',
+          position: 'relative',
+          overflow: 'hidden',
+          background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(63, 81, 181, 0.1))',
+          borderRadius: '12px',
+          padding: '8px 16px',
+          '&:before': {
+            content: '""',
+            position: 'absolute',
+            top: 0,
+            left: '-100%',
+            width: '100%',
+            height: '100%',
+            background: 'linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+            transition: 'all 0.5s ease',
+          },
           '&:hover': {
-            color: 'var(--primary-dark)',
-            backgroundColor: 'var(--dark-hover)',
-            transform: 'scale(1.05)',
+            background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.2), rgba(63, 81, 181, 0.2))',
+            transform: 'translateY(-2px)',
+            boxShadow: '0 4px 15px rgba(156, 39, 176, 0.2)',
+            '&:before': {
+              left: '100%',
+            }
           }
         }}
       >
@@ -172,15 +190,15 @@ const CategoryMenu = ({ onSelectCategory }) => {
         PaperProps={{
           sx: {
             mt: 1.5,
-            background: 'linear-gradient(135deg, var(--dark-bg-secondary), var(--dark-bg-primary))',
-            border: '1px solid var(--glass-border)',
+            background: 'linear-gradient(135deg, rgba(29, 38, 113, 0.98), rgba(35, 41, 113, 0.98))',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
             boxShadow: '0 8px 16px rgba(0,0,0,0.4)',
             '& .MuiMenuItem-root': {
               fontSize: '0.9rem',
-              color: 'var(--dark-text-secondary)',
+              color: 'rgba(255, 255, 255, 0.9)',
               '&:hover': {
-                backgroundColor: 'var(--primary-light)',
-                color: 'var(--dark-text-primary)',
+                backgroundColor: 'rgba(138, 43, 226, 0.2)',
+                color: '#ffffff',
                 transform: 'translateX(5px)',
               }
             }
@@ -216,7 +234,19 @@ const MobileMenu = ({ onClose, onSelectCategory }) => {
   };
 
   return (
-    <Box sx={{ width: 250, pt: 2 }}>
+    <Box sx={{ 
+      width: 250, 
+      pt: 2,
+      '& .MuiListItemText-primary': {
+        color: 'rgba(255, 255, 255, 0.9)',
+      },
+      '& .MuiListItemText-secondary': {
+        color: 'rgba(255, 255, 255, 0.7)',
+      },
+      '& .MuiListItemIcon-root': {
+        color: 'rgba(255, 255, 255, 0.9)',
+      }
+    }}>
       <List>
         <ListItem button onClick={() => handleNavigation('/')}>
           <ListItemIcon>
@@ -313,12 +343,21 @@ const UserMenu = ({ anchorEl, handleClose, user, handleLogout }) => (
     onClose={handleClose}
     PaperProps={{
       sx: {
-        backgroundColor: 'rgba(29, 38, 113, 0.95)',
+        backgroundColor: 'rgba(29, 38, 113, 0.98)',
         backdropFilter: 'blur(10px)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
         borderRadius: '12px',
         mt: 1.5,
-        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.4)',
+        '& .MuiMenuItem-root': {
+          color: 'rgba(255, 255, 255, 0.9)',
+          '&:hover': {
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          }
+        },
+        '& .MuiListItemIcon-root': {
+          color: 'rgba(255, 255, 255, 0.9)',
+        }
       }
     }}
   >
@@ -542,10 +581,15 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
             <IconButton
               onClick={() => navigate('/cart')}
               sx={{
-                p: { xs: 0.5, sm: 1 },
+                p: { xs: 0.8, sm: 1.2 },
+                background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(63, 81, 181, 0.1))',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '12px',
+                transition: 'all 0.3s ease',
                 '&:hover': {
-                  backgroundColor: 'var(--primary-light)',
+                  background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.2), rgba(63, 81, 181, 0.2))',
                   transform: 'translateY(-3px)',
+                  boxShadow: '0 4px 15px rgba(156, 39, 176, 0.2)',
                 },
               }}
             >
@@ -554,13 +598,18 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                 color="primary"
                 sx={{
                   '& .MuiBadge-badge': {
+                    background: 'linear-gradient(45deg, #9C27B0, #3F51B5)',
                     fontSize: { xs: '0.65rem', sm: '0.75rem' },
                     minWidth: { xs: '18px', sm: '20px' },
                     height: { xs: '18px', sm: '20px' },
+                    boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
                   }
                 }}
               >
-                <ShoppingCartIcon sx={{ fontSize: { xs: '1.2rem', sm: '1.5rem' } }} />
+                <ShoppingCartIcon sx={{ 
+                  fontSize: { xs: '1.2rem', sm: '1.5rem' },
+                  color: 'var(--primary-color)',
+                }} />
               </Badge>
             </IconButton>
 
@@ -570,14 +619,30 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                 <IconButton
                   onClick={handleOpenUserMenu}
                   sx={{
-                    p: 0.5,
-                    border: '2px solid',
-                    borderColor: 'primary.main',
-                    '&:hover': { transform: 'scale(1.15)' }
+                    p: { xs: 0.8, sm: 1.2 },
+                    background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(63, 81, 181, 0.1))',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    borderRadius: '12px',
+                    transition: 'all 0.3s ease',
+                    '&:hover': {
+                      background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.2), rgba(63, 81, 181, 0.2))',
+                      transform: 'translateY(-3px)',
+                      boxShadow: '0 4px 15px rgba(156, 39, 176, 0.2)',
+                    }
                   }}
                 >
-                  <Avatar sx={{ width: 32, height: 32 }}>
-                    {user.username ? user.username[0].toUpperCase() : 'U'}
+                  <Avatar sx={{ 
+                    width: { xs: 28, sm: 32 }, 
+                    height: { xs: 28, sm: 32 },
+                    background: 'linear-gradient(45deg, rgba(138, 43, 226, 0.9), rgba(63, 81, 181, 0.9))',
+                    border: '2px solid rgba(20, 20, 30, 0.8)',
+                    fontSize: { xs: '0.8rem', sm: '1rem' },
+                    boxShadow: 'inset 0 0 10px rgba(0,0,0,0.2)',
+                    '&:hover': {
+                      border: '2px solid rgba(138, 43, 226, 0.5)',
+                    }
+                  }}>
+                    {user.username ? user.username.slice(0, 2).toUpperCase() : 'User'}
                   </Avatar>
                 </IconButton>
                 <UserMenu 
@@ -595,9 +660,29 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                 sx={{
                   display: { xs: 'none', sm: 'flex' },
                   fontSize: { sm: '0.8rem', md: '0.9rem' },
+                  background: 'linear-gradient(45deg, #9C27B0, #3F51B5)',
+                  borderRadius: '25px',
+                  padding: '8px 24px',
+                  textTransform: 'none',
+                  position: 'relative',
+                  overflow: 'hidden',
+                  '&:before': {
+                    content: '""',
+                    position: 'absolute',
+                    top: 0,
+                    left: '-100%',
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
+                    transition: 'all 0.5s ease',
+                  },
                   '&:hover': {
-                    backgroundColor: 'var(--primary-dark)',
+                    background: 'linear-gradient(45deg, #3F51B5, #9C27B0)',
                     transform: 'translateY(-2px)',
+                    boxShadow: '0 6px 20px rgba(156, 39, 176, 0.4)',
+                    '&:before': {
+                      left: '100%',
+                    }
                   }
                 }}
               >
