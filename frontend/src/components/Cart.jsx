@@ -21,6 +21,7 @@ import {
 import { useNotification } from '../hooks/useNotification';
 import axios from '../axios';
 import { teal, orange } from '@mui/material/colors';
+import { formatPrice } from '../utils/formatPrice';
 
 const Cart = () => {
   const { cart, removeFromCart } = useContext(AppContext);
@@ -29,7 +30,12 @@ const Cart = () => {
   const { showSuccess, showError } = useNotification();
 
   const calculateTotal = () => {
-    return cart.reduce((total, item) => total + item.product.price * item.quantity, 0);
+    if (!cart || cart.length === 0) return 0;
+    return cart.reduce((total, item) => {
+      const price = item.product?.price || 0;
+      const quantity = item.quantity || 0;
+      return total + (price * quantity);
+    }, 0);
   };
 
   const handlePurchase = async () => {
@@ -146,7 +152,7 @@ const Cart = () => {
                             {item.product.brand}
                           </Typography>
                           <Typography variant="h5" color={teal[600]} fontWeight="bold" gutterBottom>
-                            ₹{item.product.price.toLocaleString()}
+                            {formatPrice(item.product?.price)}
                           </Typography>
                           <Box sx={{ 
                             mt: 2, 
@@ -199,8 +205,8 @@ const Cart = () => {
             <Divider sx={{ my: 3 }} />
             
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography>Items ({cart.length})</Typography>
-              <Typography>₹{calculateTotal()}</Typography>
+              <Typography>Items ({cart?.length || 0})</Typography>
+              <Typography>{formatPrice(calculateTotal())}</Typography>
             </Box>
             
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
@@ -213,7 +219,7 @@ const Cart = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
               <Typography variant="h6">Total Amount</Typography>
               <Typography variant="h6" color={teal[600]}>
-                ₹{calculateTotal()}
+                {formatPrice(calculateTotal())}
               </Typography>
             </Box>
 

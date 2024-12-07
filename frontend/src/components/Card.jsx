@@ -22,6 +22,53 @@ import {
     LocalShipping as ShippingIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
+import { formatPrice } from '../utils/formatPrice';
+
+const generateDefaultSvg = (category) => {
+    const icons = {
+        Laptop: `<path d="M40,60 L260,60 L260,200 L40,200 Z M20,200 L280,200 L300,240 L0,240 Z" fill="none" stroke="white" stroke-width="8"/>
+                 <rect x="80" y="220" width="140" height="8" fill="white"/>`,
+        Mobile: `<path d="M100,20 L200,20 Q220,20 220,40 L220,260 Q220,280 200,280 L100,280 Q80,280 80,260 L80,40 Q80,20 100,20 Z" fill="none" stroke="white" stroke-width="8"/>
+                 <circle cx="150" cy="250" r="15" fill="white"/>
+                 <rect x="110" y="40" width="80" height="180" fill="white" fill-opacity="0.2"/>`,
+        Headphone: `<path d="M80,150 Q80,80 150,80 Q220,80 220,150 L220,220 L200,220 L200,160 Q200,100 150,100 Q100,100 100,160 L100,220 L80,220 Z" fill="none" stroke="white" stroke-width="8"/>
+                    <rect x="60" y="180" width="40" height="80" rx="20" fill="white"/>
+                    <rect x="200" y="180" width="40" height="80" rx="20" fill="white"/>`,
+        Electronics: `<path d="M40,80 L260,80 Q280,80 280,100 L280,200 Q280,220 260,220 L40,220 Q20,220 20,200 L20,100 Q20,80 40,80 Z" fill="none" stroke="white" stroke-width="8"/>
+                     <circle cx="150" cy="150" r="30" fill="white"/>
+                     <circle cx="250" cy="100" r="10" fill="white"/>`,
+        default: `<path d="M150,50 L250,150 L150,250 L50,150 Z" fill="none" stroke="white" stroke-width="8"/>
+                  <circle cx="150" cy="150" r="30" fill="white"/>`
+    };
+
+    const colors = {
+        Laptop: ['#4A90E2', '#357ABD'],
+        Mobile: ['#50E3C2', '#39B3A3'],
+        Headphone: ['#F5A623', '#F39C12'],
+        Electronics: ['#9B59B6', '#8E44AD'],
+        default: ['#95A5A6', '#7F8C8D']
+    };
+
+    const [primary, secondary] = colors[category] || colors.default;
+    const icon = icons[category] || icons.default;
+
+    return `data:image/svg+xml,${encodeURIComponent(`
+        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:${primary};stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:${secondary};stop-opacity:1" />
+                </linearGradient>
+                <pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="10" cy="10" r="1.5" fill="#fff" fill-opacity="0.2"/>
+                </pattern>
+            </defs>
+            <rect width="100%" height="100%" fill="url(#grad)"/>
+            <rect width="100%" height="100%" fill="url(#pattern)"/>
+            ${icon}
+        </svg>
+    `)}`;
+};
 
 const Card = ({ product }) => {
     const navigate = useNavigate();
@@ -103,7 +150,7 @@ const Card = ({ product }) => {
                     )}
                     <CardMedia
                         component="img"
-                        image={product.imageUrl || `https://via.placeholder.com/300?text=${product.name}`}
+                        image={product.imageUrl || generateDefaultSvg(product.category)}
                         alt={product.name}
                         onLoad={() => setImageLoaded(true)}
                         sx={{ 
@@ -228,8 +275,7 @@ const Card = ({ product }) => {
                             gap: 0.5
                         }}
                     >
-                        <span style={{ fontSize: '0.8em', color: '#666' }}>₹</span>
-                        {product.price.toLocaleString()}
+                        {formatPrice(product.price)}
                     </Typography>
                 </CardContent>
 

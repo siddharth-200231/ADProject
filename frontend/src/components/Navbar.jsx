@@ -46,17 +46,17 @@ import Logo from './Logo';
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: '12px',
-  backgroundColor: 'var(--dark-bg-elevated)',
-  border: '1px solid var(--glass-border)',
+  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  border: '1px solid rgba(255, 255, 255, 0.2)',
   '&:hover': {
-    backgroundColor: 'var(--dark-bg-secondary)',
-    borderColor: 'var(--primary-color)',
-    boxShadow: '0 0 10px var(--primary-muted)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+    boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)',
   },
   '&:focus-within': {
-    backgroundColor: 'var(--dark-bg-secondary)',
-    borderColor: 'var(--primary-color)',
-    boxShadow: '0 0 0 3px var(--primary-muted)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.1)',
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
@@ -313,10 +313,12 @@ const UserMenu = ({ anchorEl, handleClose, user, handleLogout }) => (
     onClose={handleClose}
     PaperProps={{
       sx: {
-        backgroundColor: 'var(--dark-bg-secondary)',
-        border: '1px solid var(--glass-border)',
+        backgroundColor: 'rgba(29, 38, 113, 0.95)',
+        backdropFilter: 'blur(10px)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
         borderRadius: '12px',
         mt: 1.5,
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
       }
     }}
   >
@@ -407,9 +409,24 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
   };
 
   return (
-    <AppBar position="sticky" className="navbar" sx={{ background: 'linear-gradient(135deg, var(--dark-bg-primary), var(--dark-bg-secondary))' }}>
+    <AppBar 
+      position="sticky" 
+      className="navbar" 
+      sx={{ 
+        background: 'linear-gradient(135deg, rgba(29, 38, 113, 0.95), rgba(195, 55, 100, 0.95))',
+        backdropFilter: 'blur(10px)',
+        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+      }}
+    >
       <Container maxWidth="xl">
-        <Toolbar disableGutters sx={{ justifyContent: 'space-between' }}>
+        <Toolbar 
+          disableGutters 
+          sx={{ 
+            justifyContent: 'space-between',
+            py: 1, // Add some vertical padding
+          }}
+        >
           {/* Mobile Menu Icon */}
           <IconButton
             sx={{ display: { md: 'none' } }}
