@@ -62,16 +62,27 @@ const Cart = () => {
     return (
       <Container maxWidth="md" sx={{ mt: 8, mb: 4, minHeight: '60vh' }}>
         <Paper 
-          elevation={6} 
+          elevation={8}
           sx={{ 
-            p: 6, 
+            p: 8,
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             gap: 3,
-            borderRadius: 4,
-            background: `linear-gradient(145deg, ${teal[50]}, ${orange[50]})`,
+            borderRadius: '2rem',
+            background: `linear-gradient(135deg, ${teal[50]}, ${orange[50]}, ${teal[50]})`,
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '6px',
+              background: `linear-gradient(90deg, ${teal[400]}, ${orange[400]})`,
+            }
           }}
         >
           <RemoveShoppingCart sx={{ fontSize: 80, color: teal[300] }} />
@@ -88,41 +99,70 @@ const Cart = () => {
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 6, mb: 8 }}>
+    <Container maxWidth="lg" sx={{ mt: 8, mb: 8 }}>
       <Box sx={{ 
-        mb: 5, 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 2,
-        p: 3,
-        borderRadius: 2,
-        background: `linear-gradient(90deg, ${teal[50]}, ${orange[50]})`,
+        mb: 6,
+        p: 4,
+        borderRadius: '1.5rem',
+        background: `linear-gradient(135deg, ${teal[50]}, ${orange[50]})`,
+        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+        transform: 'translateY(-20px)',
       }}>
-        <ShoppingCart sx={{ fontSize: 40, color: teal[600] }} />
-        <Typography variant="h3" fontWeight="bold" color={teal[800]}>
-          Shopping Cart
+        <Typography variant="h3" 
+          sx={{
+            fontWeight: 900,
+            color: teal[800],
+            textAlign: 'center',
+            position: 'relative',
+            '&::after': {
+              content: '""',
+              position: 'absolute',
+              bottom: -10,
+              left: '50%',
+              transform: 'translateX(-50%)',
+              width: '80px',
+              height: '4px',
+              background: `linear-gradient(90deg, ${teal[400]}, ${orange[400]})`,
+              borderRadius: '2px',
+            }
+          }}>
+          Your Shopping Cart
         </Typography>
       </Box>
 
-      <Grid container spacing={4}>
+      <Grid container spacing={6}>
         <Grid item xs={12} md={8}>
           <Paper elevation={3} sx={{ 
-            p: 3, 
-            mb: 2, 
-            borderRadius: 3,
-            background: `linear-gradient(145deg, ${orange[50]}, #ffffff)`,
+            p: 4,
+            borderRadius: '1.5rem',
+            background: '#ffffff',
+            position: 'relative',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+              background: `linear-gradient(135deg, ${orange[50]}, transparent)`,
+              borderRadius: 'inherit',
+              zIndex: 0,
+            }
           }}>
             {cart.map((item) => (
               <Card 
                 key={item.id} 
                 sx={{ 
-                  mb: 3, 
-                  borderRadius: 2,
-                  '&:last-child': { mb: 0 },
-                  transition: 'all 0.3s ease',
+                  mb: 3,
+                  borderRadius: '1rem',
+                  position: 'relative',
+                  zIndex: 1,
+                  background: '#ffffff',
+                  backdropFilter: 'blur(10px)',
+                  transition: 'all 0.4s ease',
                   '&:hover': {
-                    transform: 'translateY(-4px)',
-                    boxShadow: 6
+                    transform: 'translateY(-8px) scale(1.02)',
+                    boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
                   }
                 }}
               >
@@ -190,13 +230,16 @@ const Cart = () => {
 
         <Grid item xs={12} md={4}>
           <Paper 
-            elevation={4} 
+            elevation={6}
             sx={{ 
-              p: 4, 
-              position: 'sticky', 
+              p: 4,
+              position: 'sticky',
               top: 24,
-              borderRadius: 3,
-              background: `linear-gradient(145deg, ${orange[100]}, ${teal[50]})`,
+              borderRadius: '1.5rem',
+              background: `linear-gradient(145deg, #ffffff, ${teal[50]})`,
+              backdropFilter: 'blur(10px)',
+              border: `1px solid ${teal[100]}`,
+              boxShadow: `0 8px 32px rgba(0,0,0,0.1)`,
             }}
           >
             <Typography variant="h5" gutterBottom color={teal[800]} fontWeight="bold">
@@ -229,18 +272,18 @@ const Cart = () => {
               size="large"
               onClick={() => setCheckoutOpen(true)}
               sx={{ 
-                mt: 3,
-                py: 2,
-                fontSize: '1.1rem',
+                mt: 4,
+                py: 2.5,
+                fontSize: '1.2rem',
                 fontWeight: 'bold',
-                borderRadius: 2,
-                bgcolor: teal[600],
+                borderRadius: '1rem',
+                background: `linear-gradient(135deg, ${teal[600]}, ${teal[700]})`,
                 '&:hover': {
-                  bgcolor: teal[700],
-                  transform: 'translateY(-2px)',
-                  boxShadow: 4
+                  background: `linear-gradient(135deg, ${teal[700]}, ${teal[800]})`,
+                  transform: 'translateY(-3px)',
+                  boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
                 },
-                transition: 'all 0.3s ease'
+                transition: 'all 0.4s ease'
               }}
             >
               Proceed to Checkout

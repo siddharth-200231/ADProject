@@ -45,24 +45,24 @@ import Logo from './Logo';
 // Styled components
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: '12px',
-  backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  border: '1px solid rgba(255, 255, 255, 0.2)',
+  borderRadius: '20px',
+  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  border: '2px solid rgba(255, 255, 255, 0.1)',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderColor: 'rgba(255, 255, 255, 0.3)',
-    boxShadow: '0 0 20px rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    boxShadow: '0 0 25px rgba(138, 43, 226, 0.2)',
   },
   '&:focus-within': {
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderColor: 'rgba(255, 255, 255, 0.4)',
-    boxShadow: '0 0 0 3px rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(138, 43, 226, 0.5)',
+    boxShadow: '0 0 0 4px rgba(138, 43, 226, 0.15)',
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: '100%',
   maxWidth: '500px',
-  transition: 'all 0.2s ease',
+  transition: 'all 0.3s ease',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -413,10 +413,14 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
       position="sticky" 
       className="navbar" 
       sx={{ 
-        background: 'linear-gradient(135deg, rgba(29, 38, 113, 0.95), rgba(195, 55, 100, 0.95))',
-        backdropFilter: 'blur(10px)',
-        boxShadow: '0 4px 30px rgba(0, 0, 0, 0.3)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(88, 28, 135, 0.95))',
+        backdropFilter: 'blur(15px)',
+        boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)',
+        borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          boxShadow: '0 8px 32px rgba(78, 13, 218, 0.3)',
+        }
       }}
     >
       <Container maxWidth="xl">
@@ -424,7 +428,7 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
           disableGutters 
           sx={{ 
             justifyContent: 'space-between',
-            py: 1, // Add some vertical padding
+            py: 1.5,
           }}
         >
           {/* Mobile Menu Icon */}
@@ -466,11 +470,11 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
               sx={{
                 fontFamily: "'Poppins', sans-serif",
                 fontWeight: 800,
-                background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+                background: 'linear-gradient(45deg, #9C27B0, #3F51B5)',
                 backgroundClip: 'text',
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
-                letterSpacing: '1px',
+                letterSpacing: '1.2px',
                 fontSize: { sm: '1.4rem', md: '1.8rem' },
                 textDecoration: 'none',
                 position: 'relative',
@@ -481,19 +485,20 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                   left: 0,
                   width: '100%',
                   height: '2px',
-                  background: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+                  background: 'linear-gradient(45deg, #9C27B0, #3F51B5)',
                   transform: 'scaleX(0)',
                   transition: 'transform 0.3s ease',
                   transformOrigin: 'right',
                 },
                 '&:hover': {
                   transform: 'translateY(-2px)',
+                  textShadow: '0 0 20px rgba(156, 39, 176, 0.5)',
                   '&::after': {
                     transform: 'scaleX(1)',
                     transformOrigin: 'left',
                   }
                 },
-                transition: 'transform 0.3s ease',
+                transition: 'all 0.3s ease',
               }}
             >
               TechBazaar
