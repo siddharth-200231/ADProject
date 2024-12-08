@@ -128,12 +128,12 @@ const Card = ({ product }) => {
                         0 10px 40px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.25)' : 'rgba(140, 152, 164, 0.2)'},
                         inset 0 -10px 20px ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'}`,
                     '&:hover': {
-                        transform: 'translateY(-12px) scale(1.02) rotate(1deg)',
+                        transform: 'translateY(-8px) scale(1.01)',
                         boxShadow: theme => `
-                            0 30px 60px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.35)' : 'rgba(140, 152, 164, 0.3)'},
-                            inset 0 -10px 20px ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.7)'}`,
+                            0 20px 40px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(140, 152, 164, 0.25)'},
+                            0 0 20px ${theme.palette.mode === 'dark' ? 'rgba(32,148,255,0.1)' : 'rgba(66,153,225,0.15)'}`,
                         '& .product-image': {
-                            transform: 'scale(1.15) rotate(-3deg)',
+                            transform: 'scale(1.08)',
                         },
                         '& .card-content-overlay': {
                             opacity: 1,
@@ -156,6 +156,39 @@ const Card = ({ product }) => {
                     }
                 }}
             >
+                {/* Tech Specs Badge */}
+                {product.specs && (
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: 12,
+                            left: 12,
+                            zIndex: 2,
+                            display: 'flex',
+                            gap: 1,
+                            flexWrap: 'wrap',
+                            maxWidth: '70%'
+                        }}
+                    >
+                        {product.specs.map((spec, index) => (
+                            <Chip
+                                key={index}
+                                label={spec}
+                                size="small"
+                                sx={{
+                                    bgcolor: 'rgba(0, 0, 0, 0.7)',
+                                    color: '#fff',
+                                    fontSize: '0.65rem',
+                                    height: '20px',
+                                    '& .MuiChip-label': {
+                                        px: 1,
+                                    }
+                                }}
+                            />
+                        ))}
+                    </Box>
+                )}
+
                 {/* Favorite Button with Ripple Effect */}
                 <IconButton 
                     sx={{ 
@@ -179,7 +212,7 @@ const Card = ({ product }) => {
                     }
                 </IconButton>
 
-                {/* Image Container with new styling */}
+                {/* Updated Image Container */}
                 <Box sx={{ 
                     position: 'relative', 
                     pt: '75%',
@@ -190,26 +223,11 @@ const Card = ({ product }) => {
                         left: 0,
                         right: 0,
                         bottom: 0,
-                        background: 'linear-gradient(45deg, rgba(0,0,0,0.05) 0%, rgba(255,255,255,0.15) 100%)',
+                        background: theme => theme.palette.mode === 'dark'
+                            ? 'linear-gradient(45deg, rgba(0,0,0,0.2) 0%, rgba(32,148,255,0.05) 100%)'
+                            : 'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(66,153,225,0.05) 100%)',
                         zIndex: 1,
-                        borderRadius: '32px 32px 0 0',
-                        backdropFilter: 'blur(4px)',
                     },
-                    '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: '5%',
-                        left: '5%',
-                        right: '5%',
-                        bottom: '5%',
-                        border: '2px solid rgba(255,255,255,0.1)',
-                        borderRadius: '24px',
-                        opacity: 0,
-                        transition: 'opacity 0.3s ease',
-                    },
-                    '&:hover::after': {
-                        opacity: 1,
-                    }
                 }}>
                     {!imageLoaded && (
                         <Skeleton 
@@ -254,8 +272,43 @@ const Card = ({ product }) => {
                         transition: 'all 0.4s ease',
                         opacity: 0.95,
                         transform: 'translateY(5px)',
+                        '&::before': {
+                            content: '""',
+                            position: 'absolute',
+                            top: -15,
+                            left: 0,
+                            right: 0,
+                            height: 15,
+                            background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.02))'
+                        }
                     }}
                 >
+                    {/* Updated Specs Display */}
+                    <Box sx={{ mb: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
+                        {product.highlights?.map((highlight, index) => (
+                            <Typography
+                                key={index}
+                                variant="caption"
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 1,
+                                    color: 'text.secondary',
+                                    '&::before': {
+                                        content: '""',
+                                        width: 4,
+                                        height: 4,
+                                        borderRadius: '50%',
+                                        bgcolor: 'primary.main',
+                                        flexShrink: 0
+                                    }
+                                }}
+                            >
+                                {highlight}
+                            </Typography>
+                        ))}
+                    </Box>
+
                     {/* Updated Chips styling */}
                     <Box sx={{ 
                         mb: 2, 
@@ -381,19 +434,29 @@ const Card = ({ product }) => {
                         </Box>
                     )}
 
-                    {/* Price */}
-                    <Typography 
-                        variant="h5" 
-                        sx={{ 
-                            fontWeight: 800,
-                            color: '#2c3e50',
-                            display: 'flex',
-                            alignItems: 'baseline',
-                            gap: 0.5
-                        }}
-                    >
-                        {formatPrice(product.price)}
-                    </Typography>
+                    {/* Updated Price Display */}
+                    <Box sx={{ 
+                        mt: 2,
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center'
+                    }}>
+                        <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                            {formatPrice(product.price)}
+                        </Typography>
+                        {product.originalPrice && (
+                            <Typography
+                                variant="body2"
+                                sx={{
+                                    textDecoration: 'line-through',
+                                    color: 'text.secondary',
+                                    fontWeight: 500
+                                }}
+                            >
+                                {formatPrice(product.originalPrice)}
+                            </Typography>
+                        )}
+                    </Box>
                 </CardContent>
 
                 {/* Updated Card Actions */}

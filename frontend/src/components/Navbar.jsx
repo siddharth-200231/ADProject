@@ -46,17 +46,18 @@ import Logo from './Logo';
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
   borderRadius: '20px',
-  backgroundColor: 'rgba(255, 255, 255, 0.08)',
-  border: '2px solid rgba(255, 255, 255, 0.1)',
+  backgroundColor: 'rgba(255, 255, 255, 0.05)',
+  border: '2px solid rgba(138, 43, 226, 0.2)',
+  backdropFilter: 'blur(8px)',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderColor: 'rgba(255, 255, 255, 0.2)',
-    boxShadow: '0 0 25px rgba(138, 43, 226, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(138, 43, 226, 0.4)',
+    boxShadow: '0 0 30px rgba(138, 43, 226, 0.15)',
   },
   '&:focus-within': {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderColor: 'rgba(138, 43, 226, 0.5)',
-    boxShadow: '0 0 0 4px rgba(138, 43, 226, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(138, 43, 226, 0.6)',
+    boxShadow: '0 0 0 4px rgba(138, 43, 226, 0.2)',
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
@@ -156,29 +157,18 @@ const CategoryMenu = ({ onSelectCategory }) => {
           textTransform: 'none',
           fontSize: '1rem',
           fontWeight: 'bold',
-          position: 'relative',
-          overflow: 'hidden',
-          background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(63, 81, 181, 0.1))',
-          borderRadius: '12px',
-          padding: '8px 16px',
-          '&:before': {
-            content: '""',
-            position: 'absolute',
-            top: 0,
-            left: '-100%',
-            width: '100%',
-            height: '100%',
-            background: 'linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
-            transition: 'all 0.5s ease',
-          },
+          background: 'linear-gradient(45deg, rgba(138, 43, 226, 0.15), rgba(63, 81, 181, 0.15))',
+          backdropFilter: 'blur(8px)',
+          borderRadius: '15px',
+          padding: '10px 20px',
+          border: '1px solid rgba(138, 43, 226, 0.3)',
           '&:hover': {
-            background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.2), rgba(63, 81, 181, 0.2))',
+            background: 'linear-gradient(45deg, rgba(138, 43, 226, 0.25), rgba(63, 81, 181, 0.25))',
             transform: 'translateY(-2px)',
-            boxShadow: '0 4px 15px rgba(156, 39, 176, 0.2)',
-            '&:before': {
-              left: '100%',
-            }
-          }
+            boxShadow: '0 8px 20px rgba(138, 43, 226, 0.2)',
+            border: '1px solid rgba(138, 43, 226, 0.5)',
+          },
+          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }}
       >
         Categories
@@ -452,13 +442,21 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
       position="sticky" 
       className="navbar" 
       sx={{ 
-        background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(88, 28, 135, 0.95))',
-        backdropFilter: 'blur(15px)',
-        boxShadow: '0 8px 32px rgba(31, 38, 135, 0.37)',
-        borderBottom: '2px solid rgba(255, 255, 255, 0.1)',
-        transition: 'all 0.3s ease',
+        background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(88, 28, 135, 0.92))',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)',
+        borderBottom: '1px solid rgba(138, 43, 226, 0.2)',
         '&:hover': {
-          boxShadow: '0 8px 32px rgba(78, 13, 218, 0.3)',
+          boxShadow: '0 8px 32px rgba(138, 43, 226, 0.25)',
+        },
+        '&::before': {
+          content: '""',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          height: '1px',
+          background: 'linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.5), transparent)',
         }
       }}
     >
