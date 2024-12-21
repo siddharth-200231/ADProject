@@ -45,25 +45,22 @@ import Logo from './Logo';
 // Styled components
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: '20px',
-  backgroundColor: 'rgba(255, 255, 255, 0.05)',
-  border: '2px solid rgba(138, 43, 226, 0.2)',
-  backdropFilter: 'blur(8px)',
+  borderRadius: '8px',
+  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+  border: '1px solid rgba(255, 255, 255, 0.1)',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderColor: 'rgba(138, 43, 226, 0.4)',
-    boxShadow: '0 0 30px rgba(138, 43, 226, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   '&:focus-within': {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderColor: 'rgba(138, 43, 226, 0.6)',
-    boxShadow: '0 0 0 4px rgba(138, 43, 226, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(255, 255, 255, 0.3)',
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: '100%',
   maxWidth: '500px',
-  transition: 'all 0.3s ease',
+  transition: 'all 0.2s ease',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -155,20 +152,15 @@ const CategoryMenu = ({ onSelectCategory }) => {
         sx={{
           color: 'rgba(255, 255, 255, 0.9)',
           textTransform: 'none',
-          fontSize: '1rem',
-          fontWeight: 'bold',
-          background: 'linear-gradient(45deg, rgba(138, 43, 226, 0.15), rgba(63, 81, 181, 0.15))',
-          backdropFilter: 'blur(8px)',
-          borderRadius: '15px',
-          padding: '10px 20px',
-          border: '1px solid rgba(138, 43, 226, 0.3)',
+          fontSize: '0.9rem',
+          fontWeight: 500,
+          background: 'rgba(255, 255, 255, 0.08)',
+          borderRadius: '6px',
+          padding: '8px 16px',
           '&:hover': {
-            background: 'linear-gradient(45deg, rgba(138, 43, 226, 0.25), rgba(63, 81, 181, 0.25))',
-            transform: 'translateY(-2px)',
-            boxShadow: '0 8px 20px rgba(138, 43, 226, 0.2)',
-            border: '1px solid rgba(138, 43, 226, 0.5)',
+            background: 'rgba(255, 255, 255, 0.12)',
           },
-          transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+          transition: 'all 0.2s ease',
         }}
       >
         Categories
@@ -442,22 +434,10 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
       position="sticky" 
       className="navbar" 
       sx={{ 
-        background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.92), rgba(88, 28, 135, 0.92))',
-        backdropFilter: 'blur(20px)',
-        boxShadow: '0 8px 32px rgba(31, 38, 135, 0.15)',
-        borderBottom: '1px solid rgba(138, 43, 226, 0.2)',
-        '&:hover': {
-          boxShadow: '0 8px 32px rgba(138, 43, 226, 0.25)',
-        },
-        '&::before': {
-          content: '""',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          height: '1px',
-          background: 'linear-gradient(90deg, transparent, rgba(138, 43, 226, 0.5), transparent)',
-        }
+        background: 'rgba(22, 28, 36, 0.95)',
+        backdropFilter: 'blur(8px)',
+        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
       }}
     >
       <Container maxWidth="xl">
@@ -505,37 +485,16 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
               component={Link}
               to="/"
               sx={{
-                fontFamily: "'Poppins', sans-serif",
-                fontWeight: 800,
-                background: 'linear-gradient(45deg, #9C27B0, #3F51B5)',
-                backgroundClip: 'text',
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-                letterSpacing: '1.2px',
-                fontSize: { sm: '1.4rem', md: '1.8rem' },
+                fontFamily: "'Inter', sans-serif",
+                fontWeight: 600,
+                color: '#fff',
+                letterSpacing: '0.5px',
+                fontSize: { sm: '1.2rem', md: '1.4rem' },
                 textDecoration: 'none',
-                position: 'relative',
-                '&::after': {
-                  content: '""',
-                  position: 'absolute',
-                  bottom: -4,
-                  left: 0,
-                  width: '100%',
-                  height: '2px',
-                  background: 'linear-gradient(45deg, #9C27B0, #3F51B5)',
-                  transform: 'scaleX(0)',
-                  transition: 'transform 0.3s ease',
-                  transformOrigin: 'right',
-                },
                 '&:hover': {
-                  transform: 'translateY(-2px)',
-                  textShadow: '0 0 20px rgba(156, 39, 176, 0.5)',
-                  '&::after': {
-                    transform: 'scaleX(1)',
-                    transformOrigin: 'left',
-                  }
+                  color: 'rgba(255, 255, 255, 0.85)',
                 },
-                transition: 'all 0.3s ease',
+                transition: 'color 0.2s ease',
               }}
             >
               TechBazaar
@@ -579,15 +538,11 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
             <IconButton
               onClick={() => navigate('/cart')}
               sx={{
-                p: { xs: 0.8, sm: 1.2 },
-                background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(63, 81, 181, 0.1))',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
-                borderRadius: '12px',
-                transition: 'all 0.3s ease',
+                p: 1,
+                background: 'rgba(255, 255, 255, 0.08)',
+                borderRadius: '6px',
                 '&:hover': {
-                  background: 'linear-gradient(45deg, rgba(156, 39, 176, 0.2), rgba(63, 81, 181, 0.2))',
-                  transform: 'translateY(-3px)',
-                  boxShadow: '0 4px 15px rgba(156, 39, 176, 0.2)',
+                  background: 'rgba(255, 255, 255, 0.12)',
                 },
               }}
             >
@@ -657,30 +612,13 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                 variant="contained"
                 sx={{
                   display: { xs: 'none', sm: 'flex' },
-                  fontSize: { sm: '0.8rem', md: '0.9rem' },
-                  background: 'linear-gradient(45deg, #9C27B0, #3F51B5)',
-                  borderRadius: '25px',
-                  padding: '8px 24px',
+                  fontSize: '0.875rem',
+                  background: 'rgba(255, 255, 255, 0.1)',
+                  borderRadius: '6px',
+                  padding: '6px 16px',
                   textTransform: 'none',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  '&:before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: '-100%',
-                    width: '100%',
-                    height: '100%',
-                    background: 'linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent)',
-                    transition: 'all 0.5s ease',
-                  },
                   '&:hover': {
-                    background: 'linear-gradient(45deg, #3F51B5, #9C27B0)',
-                    transform: 'translateY(-2px)',
-                    boxShadow: '0 6px 20px rgba(156, 39, 176, 0.4)',
-                    '&:before': {
-                      left: '100%',
-                    }
+                    background: 'rgba(255, 255, 255, 0.15)',
                   }
                 }}
               >

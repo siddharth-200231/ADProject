@@ -60,113 +60,57 @@ const Cart = () => {
 
   if (!cart || cart.length === 0) {
     return (
-      <Container maxWidth="md" sx={{ mt: 8, mb: 4, minHeight: '60vh' }}>
+      <Container maxWidth="md" sx={{ mt: 4, mb: 4, minHeight: '70vh' }}>
         <Paper 
-          elevation={8}
+          elevation={3}
           sx={{ 
-            p: 8,
+            p: 6,
             textAlign: 'center',
+            borderRadius: '16px',
+            background: '#ffffff',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: 3,
-            borderRadius: '2rem',
-            background: `linear-gradient(135deg, ${teal[50]}, ${orange[50]}, ${teal[50]})`,
-            position: 'relative',
-            overflow: 'hidden',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              height: '6px',
-              background: `linear-gradient(90deg, ${teal[400]}, ${orange[400]})`,
-            }
+            gap: 3
           }}
         >
-          <RemoveShoppingCart sx={{ fontSize: 80, color: teal[300] }} />
-          <Typography variant="h4" gutterBottom fontWeight="bold" color={teal[800]}>
+          <ShoppingCart sx={{ fontSize: 64, color: 'primary.main', opacity: 0.5 }} />
+          <Typography variant="h4" fontWeight={600}>
             Your cart is empty
           </Typography>
-          <Typography variant="h6" color="text.secondary" sx={{ maxWidth: 500 }}>
-            Looks like you haven't added anything to your cart yet.
-            Explore our products and find something you love!
+          <Typography variant="body1" color="text.secondary" sx={{ maxWidth: 400 }}>
+            Start shopping to add items to your cart
           </Typography>
+          <Button
+            variant="contained"
+            size="large"
+            href="/"
+            sx={{
+              mt: 2,
+              borderRadius: '8px',
+              textTransform: 'none',
+              px: 4
+            }}
+          >
+            Browse Products
+          </Button>
         </Paper>
       </Container>
     );
   }
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 8, mb: 8 }}>
-      <Box sx={{ 
-        mb: 6,
-        p: 4,
-        borderRadius: '1.5rem',
-        background: `linear-gradient(135deg, ${teal[50]}, ${orange[50]})`,
-        boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
-        transform: 'translateY(-20px)',
-      }}>
-        <Typography variant="h3" 
-          sx={{
-            fontWeight: 900,
-            color: teal[800],
-            textAlign: 'center',
-            position: 'relative',
-            '&::after': {
-              content: '""',
-              position: 'absolute',
-              bottom: -10,
-              left: '50%',
-              transform: 'translateX(-50%)',
-              width: '80px',
-              height: '4px',
-              background: `linear-gradient(90deg, ${teal[400]}, ${orange[400]})`,
-              borderRadius: '2px',
-            }
-          }}>
-          Your Shopping Cart
-        </Typography>
-      </Box>
+    <Container maxWidth="xl" sx={{ py: 4 }}>
+      <Typography variant="h4" fontWeight={600} sx={{ mb: 4 }}>
+        Shopping Cart ({cart.length} {cart.length === 1 ? 'item' : 'items'})
+      </Typography>
 
-      <Grid container spacing={6}>
-        <Grid item xs={12} md={8}>
-          <Paper elevation={3} sx={{ 
-            p: 4,
-            borderRadius: '1.5rem',
-            background: '#ffffff',
-            position: 'relative',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              width: '100%',
-              height: '100%',
-              background: `linear-gradient(135deg, ${orange[50]}, transparent)`,
-              borderRadius: 'inherit',
-              zIndex: 0,
-            }
-          }}>
-            {cart.map((item) => (
-              <Card 
-                key={item.id} 
-                sx={{ 
-                  mb: 3,
-                  borderRadius: '1rem',
-                  position: 'relative',
-                  zIndex: 1,
-                  background: '#ffffff',
-                  backdropFilter: 'blur(10px)',
-                  transition: 'all 0.4s ease',
-                  '&:hover': {
-                    transform: 'translateY(-8px) scale(1.02)',
-                    boxShadow: '0 12px 40px rgba(0,0,0,0.12)',
-                  }
-                }}
-              >
-                <CardContent sx={{ p: 3 }}>
+      <Grid container spacing={4}>
+        <Grid item xs={12} lg={8}>
+          <Paper sx={{ borderRadius: '16px', overflow: 'hidden' }}>
+            {cart.map((item, index) => (
+              <React.Fragment key={item.id}>
+                <Box sx={{ p: 3 }}>
                   <Grid container spacing={3} alignItems="center">
                     <Grid item xs={12} sm={3}>
                       <Box
@@ -175,118 +119,97 @@ const Cart = () => {
                         alt={item.product.name}
                         sx={{
                           width: '100%',
-                          height: 'auto',
-                          borderRadius: 2,
+                          aspectRatio: '1',
                           objectFit: 'cover',
-                          boxShadow: 2
+                          borderRadius: '12px'
                         }}
                       />
                     </Grid>
-                    <Grid item xs={12} sm={9}>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <Box>
-                          <Typography variant="h5" fontWeight="bold" gutterBottom>
-                            {item.product.name}
-                          </Typography>
-                          <Typography variant="subtitle1" color="text.secondary" gutterBottom>
-                            {item.product.brand}
-                          </Typography>
-                          <Typography variant="h5" color={teal[600]} fontWeight="bold" gutterBottom>
-                            {formatPrice(item.product?.price)}
-                          </Typography>
-                          <Box sx={{ 
-                            mt: 2, 
-                            p: 1, 
-                            borderRadius: 1, 
-                            bgcolor: teal[50],
-                            display: 'inline-block'
-                          }}>
-                            <Typography variant="body1" fontWeight="medium">
-                              Quantity: {item.quantity}
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <IconButton 
-                          onClick={() => removeFromCart(item.id)}
-                          color="error"
-                          sx={{ 
-                            alignSelf: 'flex-start',
-                            '&:hover': {
-                              transform: 'scale(1.1)',
-                              bgcolor: 'error.light'
-                            }
-                          }}
-                        >
-                          <DeleteIcon />
-                        </IconButton>
+                    <Grid item xs={12} sm={6}>
+                      <Typography variant="subtitle1" fontWeight={600} gutterBottom>
+                        {item.product.name}
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" gutterBottom>
+                        {item.product.brand}
+                      </Typography>
+                      <Box 
+                        sx={{ 
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          bgcolor: 'grey.100',
+                          borderRadius: '8px',
+                          px: 2,
+                          py: 0.5,
+                          mt: 1
+                        }}
+                      >
+                        <Typography variant="body2">
+                          Qty: {item.quantity}
+                        </Typography>
                       </Box>
                     </Grid>
+                    <Grid item xs={12} sm={3} sx={{ textAlign: { sm: 'right' } }}>
+                      <Typography variant="h6" fontWeight={600}>
+                        {formatPrice(item.product?.price * item.quantity)}
+                      </Typography>
+                      <Button
+                        startIcon={<DeleteIcon />}
+                        onClick={() => removeFromCart(item.id)}
+                        color="error"
+                        sx={{ mt: 1, textTransform: 'none' }}
+                      >
+                        Remove
+                      </Button>
+                    </Grid>
                   </Grid>
-                </CardContent>
-              </Card>
+                </Box>
+                {index < cart.length - 1 && <Divider />}
+              </React.Fragment>
             ))}
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={4}>
-          <Paper 
-            elevation={6}
-            sx={{ 
-              p: 4,
-              position: 'sticky',
-              top: 24,
-              borderRadius: '1.5rem',
-              background: `linear-gradient(145deg, #ffffff, ${teal[50]})`,
-              backdropFilter: 'blur(10px)',
-              border: `1px solid ${teal[100]}`,
-              boxShadow: `0 8px 32px rgba(0,0,0,0.1)`,
-            }}
-          >
-            <Typography variant="h5" gutterBottom color={teal[800]} fontWeight="bold">
+        <Grid item xs={12} lg={4}>
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: '16px',
+            position: 'sticky',
+            top: 24
+          }}>
+            <Typography variant="h6" fontWeight={600} gutterBottom>
               Order Summary
             </Typography>
-            <Divider sx={{ my: 3 }} />
-            
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography>Items ({cart?.length || 0})</Typography>
-              <Typography>{formatPrice(calculateTotal())}</Typography>
+            <Box sx={{ my: 3 }}>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Typography color="text.secondary">Subtotal</Typography>
+                <Typography fontWeight={500}>{formatPrice(calculateTotal())}</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+                <Typography color="text.secondary">Shipping</Typography>
+                <Typography color="success.main" fontWeight={500}>Free</Typography>
+              </Box>
+              <Divider sx={{ my: 2 }} />
+              <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                <Typography fontWeight={600}>Total</Typography>
+                <Typography variant="h6" fontWeight={600}>
+                  {formatPrice(calculateTotal())}
+                </Typography>
+              </Box>
             </Box>
-            
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-              <Typography>Delivery</Typography>
-              <Typography color="success.main">Free</Typography>
-            </Box>
-            
-            <Divider sx={{ my: 2 }} />
-            
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-              <Typography variant="h6">Total Amount</Typography>
-              <Typography variant="h6" color={teal[600]}>
-                {formatPrice(calculateTotal())}
-              </Typography>
-            </Box>
-
-            <Button 
-              variant="contained" 
-              fullWidth 
+            <Button
+              variant="contained"
+              fullWidth
               size="large"
               onClick={() => setCheckoutOpen(true)}
-              sx={{ 
-                mt: 4,
-                py: 2.5,
-                fontSize: '1.2rem',
-                fontWeight: 'bold',
-                borderRadius: '1rem',
-                background: `linear-gradient(135deg, ${teal[600]}, ${teal[700]})`,
-                '&:hover': {
-                  background: `linear-gradient(135deg, ${teal[700]}, ${teal[800]})`,
-                  transform: 'translateY(-3px)',
-                  boxShadow: '0 12px 24px rgba(0,0,0,0.15)',
-                },
-                transition: 'all 0.4s ease'
+              sx={{
+                mt: 2,
+                py: 1.5,
+                borderRadius: '8px',
+                textTransform: 'none',
+                fontSize: '1.1rem'
               }}
             >
-              Proceed to Checkout
+              Checkout
             </Button>
           </Paper>
         </Grid>

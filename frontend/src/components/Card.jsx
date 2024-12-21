@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import AppContext from '../Context/Context';
 import { useNotification } from '../hooks/useNotification';
 import { 
@@ -13,7 +13,8 @@ import {
     Rating,
     IconButton,
     Skeleton,
-    Fade
+    Fade,
+    useTheme
 } from '@mui/material';
 import { 
     ShoppingCart as CartIcon,
@@ -52,11 +53,11 @@ const generateDefaultSvg = (category) => {
     };
 
     const colors = {
-        Laptop: ['#4A90E2', '#2574c4'],
-        Mobile: ['#50E3C2', '#00b894'],
-        Headphone: ['#F5A623', '#e17055'],
-        Electronics: ['#9B59B6', '#6c5ce7'],
-        default: ['#95A5A6', '#636e72']
+        Laptop: ['#6366f1', '#4f46e5'],
+        Mobile: ['#ec4899', '#db2777'],
+        Headphone: ['#8b5cf6', '#7c3aed'],
+        Electronics: ['#14b8a6', '#0d9488'],
+        default: ['#64748b', '#475569']
     };
 
     const [primary, secondary] = colors[category] || colors.default;
@@ -88,14 +89,28 @@ const generateDefaultSvg = (category) => {
     `)}`;
 };
 
-const Card = ({ product }) => {
+// Updated gradient and color palette
+const getGradients = (isDark) => ({
+    primary: isDark 
+        ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(23, 31, 50, 0.98) 100%)'
+        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 251, 254, 0.98) 100%)',
+    accent: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+    hover: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
+});
+
+const Card = React.memo(({ product }) => {
     const navigate = useNavigate();
     const [isFavorite, setIsFavorite] = React.useState(false);
-    const [imageLoaded, setImageLoaded] = React.useState(false);
+    const [isHovered, setIsHovered] = React.useState(false);
     const { addToCart, user } = useContext(AppContext);
     const { showSuccess, showError } = useNotification();
+    const theme = useTheme();
 
-    const handleAddToCart = async () => {
+    const gradients = React.useMemo(() => getGradients(theme.palette.mode === 'dark'), 
+        [theme.palette.mode]);
+
+    const handleAddToCart = async (e) => {
+        e.stopPropagation();
         if (!user) {
             navigate('/login');
             return;
@@ -111,142 +126,110 @@ const Card = ({ product }) => {
     };
 
     return (
-        <Fade in={true} timeout={700}>
+        <Fade in={true} timeout={600}>
             <MuiCard 
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={() => navigate(`/product/${product.id}`)}
                 sx={{ 
                     height: '100%', 
                     display: 'flex', 
                     flexDirection: 'column',
                     position: 'relative',
-                    transition: 'all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                    background: theme => `linear-gradient(135deg, 
-                        ${theme.palette.mode === 'dark' ? '#2a2d3e' : '#ffffff'} 0%,
-                        ${theme.palette.mode === 'dark' ? '#1a1c27' : '#f8faff'} 100%)`,
-                    borderRadius: '32px',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease-in-out',
+                    background: theme => theme.palette.mode === 'dark' 
+                        ? 'rgba(15, 23, 42, 0.6)'
+                        : 'rgba(255, 255, 255, 0.9)',
+                    backdropFilter: 'blur(20px)',
+                    borderRadius: '16px',
                     overflow: 'hidden',
-                    boxShadow: theme => `
-                        0 10px 40px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.25)' : 'rgba(140, 152, 164, 0.2)'},
-                        inset 0 -10px 20px ${theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.05)' : 'rgba(255,255,255,0.5)'}`,
-                    '&:hover': {
-                        transform: 'translateY(-8px) scale(1.01)',
-                        boxShadow: theme => `
-                            0 20px 40px ${theme.palette.mode === 'dark' ? 'rgba(0,0,0,0.4)' : 'rgba(140, 152, 164, 0.25)'},
-                            0 0 20px ${theme.palette.mode === 'dark' ? 'rgba(32,148,255,0.1)' : 'rgba(66,153,225,0.15)'}`,
-                        '& .product-image': {
-                            transform: 'scale(1.08)',
-                        },
-                        '& .card-content-overlay': {
-                            opacity: 1,
-                            transform: 'translateY(0)',
-                        }
-                    },
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: '100%',
-                        background: 'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.08) 45%, rgba(255,255,255,0) 50%)',
-                        transform: 'translateX(-100%)',
-                        transition: 'transform 0.8s ease',
-                    },
-                    '&:hover::before': {
-                        transform: 'translateX(100%)',
-                    }
+                    border: theme => `1px solid ${
+                        theme.palette.mode === 'dark' 
+                            ? 'rgba(255,255,255,0.05)'
+                            : 'rgba(0,0,0,0.05)'
+                    }`,
+                    boxShadow: isHovered 
+                        ? '0 20px 40px rgba(0,0,0,0.12)'
+                        : '0 4px 12px rgba(0,0,0,0.05)',
+                    transform: isHovered ? 'translateY(-4px)' : 'none',
                 }}
             >
-                {/* Tech Specs Badge */}
-                {product.specs && (
-                    <Box
-                        sx={{
-                            position: 'absolute',
-                            top: 12,
-                            left: 12,
-                            zIndex: 2,
-                            display: 'flex',
-                            gap: 1,
-                            flexWrap: 'wrap',
-                            maxWidth: '70%'
-                        }}
-                    >
-                        {product.specs.map((spec, index) => (
-                            <Chip
-                                key={index}
-                                label={spec}
-                                size="small"
-                                sx={{
-                                    bgcolor: 'rgba(0, 0, 0, 0.7)',
-                                    color: '#fff',
-                                    fontSize: '0.65rem',
-                                    height: '20px',
-                                    '& .MuiChip-label': {
-                                        px: 1,
-                                    }
-                                }}
-                            />
-                        ))}
-                    </Box>
-                )}
+                {/* Tech Specs Badge - Updated */}
+                <Box
+                    sx={{
+                        position: 'absolute',
+                        top: 12,
+                        left: 12,
+                        zIndex: 2,
+                        display: 'flex',
+                        gap: 0.75,
+                        flexWrap: 'wrap',
+                        maxWidth: '75%'
+                    }}
+                >
+                    {product.specs?.map((spec, index) => (
+                        <Chip
+                            key={index}
+                            label={spec}
+                            size="small"
+                            onClick={(e) => e.stopPropagation()}
+                            sx={{
+                                background: 'rgba(0, 0, 0, 0.65)',
+                                backdropFilter: 'blur(8px)',
+                                color: '#fff',
+                                fontSize: '0.7rem',
+                                height: '22px',
+                                borderRadius: '6px',
+                                '& .MuiChip-label': {
+                                    px: 1.25,
+                                    fontWeight: 500,
+                                }
+                            }}
+                        />
+                    ))}
+                </Box>
 
-                {/* Favorite Button with Ripple Effect */}
+                {/* Favorite Button - Updated */}
                 <IconButton 
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setIsFavorite(!isFavorite);
+                    }}
                     sx={{ 
                         position: 'absolute', 
                         right: 12, 
                         top: 12,
                         zIndex: 2,
-                        bgcolor: 'rgba(255, 255, 255, 0.9)',
-                        backdropFilter: 'blur(4px)',
-                        transition: 'all 0.2s ease',
+                        background: 'rgba(255, 255, 255, 0.95)',
+                        backdropFilter: 'blur(8px)',
+                        width: 32,
+                        height: 32,
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
                         '&:hover': { 
-                            transform: 'scale(1.1) rotate(5deg)',
-                            bgcolor: 'rgba(255, 255, 255, 1)'
+                            background: 'rgba(255, 255, 255, 1)',
                         }
                     }}
-                    onClick={() => setIsFavorite(!isFavorite)}
                 >
                     {isFavorite ? 
-                        <FavoriteIcon sx={{ color: '#ff4081' }} /> : 
-                        <FavoriteBorderIcon />
+                        <FavoriteIcon sx={{ color: '#f43f5e', fontSize: 18 }} /> : 
+                        <FavoriteBorderIcon sx={{ color: '#64748b', fontSize: 18 }} />
                     }
                 </IconButton>
 
-                {/* Updated Image Container */}
+                {/* Image Container - Updated */}
                 <Box sx={{ 
                     position: 'relative', 
-                    pt: '75%',
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: theme => theme.palette.mode === 'dark'
-                            ? 'linear-gradient(45deg, rgba(0,0,0,0.2) 0%, rgba(32,148,255,0.05) 100%)'
-                            : 'linear-gradient(45deg, rgba(255,255,255,0.1) 0%, rgba(66,153,225,0.05) 100%)',
-                        zIndex: 1,
-                    },
+                    pt: '80%',
+                    background: theme => theme.palette.mode === 'dark' 
+                        ? '#0f172a'
+                        : '#f8fafc',
                 }}>
-                    {!imageLoaded && (
-                        <Skeleton 
-                            variant="rectangular" 
-                            sx={{ 
-                                position: 'absolute',
-                                top: 0,
-                                left: 0,
-                                width: '100%',
-                                height: '100%'
-                            }} 
-                        />
-                    )}
                     <CardMedia
-                        className="product-image"
                         component="img"
+                        loading="lazy"
                         image={product.imageUrl || generateDefaultSvg(product.category)}
                         alt={product.name}
-                        onLoad={() => setImageLoaded(true)}
                         sx={{ 
                             position: 'absolute',
                             top: 0,
@@ -254,103 +237,50 @@ const Card = ({ product }) => {
                             width: '100%',
                             height: '100%',
                             objectFit: 'cover',
-                            transition: 'transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1)'
+                            transition: 'transform 0.3s ease',
+                            transform: isHovered ? 'scale(1.03)' : 'none',
                         }}
                     />
                 </Box>
 
+                {/* Content Section - Updated */}
                 <CardContent 
-                    className="card-content-overlay"
                     sx={{ 
                         flexGrow: 1, 
-                        p: 3,
-                        position: 'relative',
-                        background: theme => `linear-gradient(to top, 
-                            ${theme.palette.mode === 'dark' ? 'rgba(26,28,39,0.95)' : 'rgba(255,255,255,0.95)'} 0%,
-                            ${theme.palette.mode === 'dark' ? 'rgba(26,28,39,0.7)' : 'rgba(255,255,255,0.7)'} 100%)`,
-                        backdropFilter: 'blur(10px)',
-                        transition: 'all 0.4s ease',
-                        opacity: 0.95,
-                        transform: 'translateY(5px)',
-                        '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            top: -15,
-                            left: 0,
-                            right: 0,
-                            height: 15,
-                            background: 'linear-gradient(to bottom, transparent, rgba(0,0,0,0.02))'
-                        }
+                        p: 2,
                     }}
                 >
-                    {/* Updated Specs Display */}
-                    <Box sx={{ mb: 2, display: 'flex', flexDirection: 'column', gap: 1 }}>
-                        {product.highlights?.map((highlight, index) => (
-                            <Typography
-                                key={index}
-                                variant="caption"
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    gap: 1,
-                                    color: 'text.secondary',
-                                    '&::before': {
-                                        content: '""',
-                                        width: 4,
-                                        height: 4,
-                                        borderRadius: '50%',
-                                        bgcolor: 'primary.main',
-                                        flexShrink: 0
-                                    }
-                                }}
-                            >
-                                {highlight}
-                            </Typography>
-                        ))}
-                    </Box>
+                    <Typography 
+                        variant="h6" 
+                        sx={{ 
+                            fontSize: '1.1rem',
+                            fontWeight: 600,
+                            mb: 1.5,
+                            color: theme => theme.palette.mode === 'dark' ? '#f1f5f9' : '#0f172a',
+                            lineHeight: 1.3,
+                        }}
+                    >
+                        {product.name}
+                    </Typography>
 
-                    {/* Updated Chips styling */}
                     <Box sx={{ 
-                        mb: 2, 
                         display: 'flex', 
                         gap: 1, 
-                        flexWrap: 'wrap',
-                        '& .MuiChip-root': {
-                            transition: 'all 0.3s ease',
-                            position: 'relative',
-                            '&::before': {
-                                content: '""',
-                                position: 'absolute',
-                                inset: -1,
-                                padding: 1,
-                                borderRadius: 'inherit',
-                                background: 'linear-gradient(45deg, #ff6b6b, #ffd93d)',
-                                WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
-                                WebkitMaskComposite: 'xor',
-                                maskComposite: 'exclude',
-                                opacity: 0,
-                                transition: 'opacity 0.3s ease'
-                            },
-                            '&:hover': {
-                                transform: 'translateY(-3px) rotate(2deg)',
-                                '&::before': {
-                                    opacity: 1
-                                }
-                            }
-                        }
+                        mb: 2,
+                        flexWrap: 'wrap'
                     }}>
                         {product.category && (
                             <Chip 
                                 label={product.category} 
                                 size="small" 
                                 sx={{ 
-                                    borderRadius: 2,
-                                    background: 'linear-gradient(45deg, #2196f3, #21cbf3)',
-                                    color: 'white',
-                                    fontWeight: 600,
-                                    textTransform: 'uppercase',
-                                    fontSize: '0.7rem',
-                                    letterSpacing: '0.5px'
+                                    background: theme => theme.palette.mode === 'dark' 
+                                        ? 'rgba(59, 130, 246, 0.15)'
+                                        : 'rgba(59, 130, 246, 0.1)',
+                                    color: '#3b82f6',
+                                    borderRadius: '6px',
+                                    height: '24px',
+                                    fontWeight: 500,
                                 }}
                             />
                         )}
@@ -360,7 +290,7 @@ const Card = ({ product }) => {
                                 size="small" 
                                 sx={{ 
                                     borderRadius: 2,
-                                    background: 'linear-gradient(45deg, #ff9800, #ff5722)',
+                                    background: 'linear-gradient(45deg, #8b5cf6, #6366f1)',
                                     color: 'white',
                                     fontWeight: 600,
                                     textTransform: 'uppercase',
@@ -376,7 +306,7 @@ const Card = ({ product }) => {
                                 size="small"
                                 sx={{ 
                                     borderRadius: 2,
-                                    background: 'linear-gradient(45deg, #4caf50, #8bc34a)',
+                                    background: 'linear-gradient(45deg, #14b8a6, #0d9488)',
                                     color: 'white',
                                     fontWeight: 600,
                                     fontSize: '0.7rem'
@@ -385,63 +315,29 @@ const Card = ({ product }) => {
                         )}
                     </Box>
 
-                    {/* Updated Typography styles */}
-                    <Typography 
-                        variant="h6" 
-                        sx={{ 
-                            fontWeight: 800,
-                            fontSize: '1.1rem',
-                            lineHeight: 1.4,
-                            mb: 1,
-                            height: '3.2em',
-                            background: 'linear-gradient(45deg, #2c3e50, #3498db)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                        }}
-                    >
-                        {product.name}
-                    </Typography>
-
-                    {/* Rating */}
-                    {product.rating && (
-                        <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                            <Rating 
-                                value={product.rating} 
-                                readOnly 
-                                size="small" 
-                                precision={0.5}
-                                sx={{
-                                    '& .MuiRating-iconFilled': {
-                                        color: '#ffd700'
-                                    }
-                                }}
-                            />
-                            <Typography 
-                                variant="body2" 
-                                sx={{ 
-                                    ml: 1,
-                                    color: '#666',
-                                    fontSize: '0.875rem'
-                                }}
-                            >
-                                ({product.rating})
-                            </Typography>
-                        </Box>
-                    )}
-
-                    {/* Updated Price Display */}
+                    {/* Price Section - Updated */}
                     <Box sx={{ 
-                        mt: 2,
+                        mt: 'auto',
+                        pt: 2,
                         display: 'flex',
+                        alignItems: 'center',
                         justifyContent: 'space-between',
-                        alignItems: 'center'
+                        borderTop: theme => `1px solid ${
+                            theme.palette.mode === 'dark' 
+                                ? 'rgba(255,255,255,0.05)'
+                                : 'rgba(0,0,0,0.05)'
+                        }`,
                     }}>
-                        <Typography variant="h5" sx={{ fontWeight: 800 }}>
+                        <Typography 
+                            variant="h6" 
+                            sx={{ 
+                                fontWeight: 700,
+                                color: theme => theme.palette.mode === 'dark' 
+                                    ? '#f1f5f9'
+                                    : '#0f172a',
+                                fontSize: '1.25rem'
+                            }}
+                        >
                             {formatPrice(product.price)}
                         </Typography>
                         {product.originalPrice && (
@@ -450,7 +346,7 @@ const Card = ({ product }) => {
                                 sx={{
                                     textDecoration: 'line-through',
                                     color: 'text.secondary',
-                                    fontWeight: 500
+                                    fontSize: '0.875rem'
                                 }}
                             >
                                 {formatPrice(product.originalPrice)}
@@ -459,61 +355,54 @@ const Card = ({ product }) => {
                     </Box>
                 </CardContent>
 
-                {/* Updated Card Actions */}
-                <CardActions sx={{ 
-                    p: 3, 
-                    pt: 2,
-                    gap: 1.5,
-                    '& .MuiButton-root': {
-                        borderRadius: '20px',
-                        textTransform: 'none',
-                        fontSize: '0.95rem',
-                        fontWeight: 600,
-                        transition: 'all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)',
-                        '&:hover': {
-                            transform: 'translateY(-3px) scale(1.03)',
-                            boxShadow: '0 12px 25px rgba(0,0,0,0.15)'
-                        }
-                    }
-                }}>
+                {/* Action Buttons - Updated */}
+                <CardActions 
+                    onClick={(e) => e.stopPropagation()}
+                    sx={{ 
+                        p: 2,
+                        pt: 0,
+                        gap: 1,
+                    }}
+                >
                     <Button 
-                        size="medium" 
                         variant="outlined"
-                        onClick={() => navigate(`/product/${product.id}`)}
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/product/${product.id}`);
+                        }}
                         sx={{
                             flex: 1,
-                            background: 'rgba(33, 150, 243, 0.05)',
-                            borderWidth: '2px',
-                            borderColor: '#2196f3',
-                            color: '#2196f3',
-                            fontWeight: 700,
+                            py: 1,
+                            borderRadius: '8px',
+                            borderColor: theme => theme.palette.mode === 'dark'
+                                ? 'rgba(255,255,255,0.1)'
+                                : 'rgba(0,0,0,0.1)',
+                            color: theme => theme.palette.mode === 'dark' ? '#f1f5f9' : '#0f172a',
                             '&:hover': {
-                                background: 'rgba(33, 150, 243, 0.1)',
-                                borderWidth: '2px',
-                                borderColor: '#1976d2',
-                                boxShadow: '0 8px 20px rgba(33, 150, 243, 0.25), inset 0 2px 4px rgba(33, 150, 243, 0.1)'
+                                borderColor: '#3b82f6',
+                                background: 'rgba(59, 130, 246, 0.08)',
                             }
                         }}
                     >
-                        View Details
+                        Details
                     </Button>
                     <Button
-                        size="medium"
                         variant="contained"
                         startIcon={<CartIcon />}
                         onClick={handleAddToCart}
                         disabled={!product.available}
                         sx={{
                             flex: 1,
-                            background: product.available 
-                                ? 'linear-gradient(45deg, #2196f3, #1976d2)'
-                                : 'linear-gradient(45deg, #9e9e9e, #757575)',
-                            boxShadow: '0 6px 15px rgba(33, 150, 243, 0.3)',
+                            py: 1,
+                            borderRadius: '8px',
+                            background: '#3b82f6',
                             '&:hover': {
-                                background: product.available 
-                                    ? 'linear-gradient(45deg, #1976d2, #1565c0)'
-                                    : 'linear-gradient(45deg, #757575, #616161)',
-                                boxShadow: '0 8px 25px rgba(33, 150, 243, 0.4), inset 0 2px 4px rgba(255, 255, 255, 0.1)'
+                                background: '#2563eb',
+                            },
+                            '&:disabled': {
+                                background: theme => theme.palette.mode === 'dark'
+                                    ? 'rgba(255,255,255,0.1)'
+                                    : 'rgba(0,0,0,0.1)',
                             }
                         }}
                     >
@@ -523,6 +412,8 @@ const Card = ({ product }) => {
             </MuiCard>
         </Fade>
     );
-};
+});
+
+Card.displayName = 'Card';
 
 export default Card;
