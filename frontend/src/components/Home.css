@@ -2,16 +2,16 @@
   padding: 2rem;
   margin-top: 5rem;
   min-height: 100vh;
-  background-color: #f8f9fa;
+  background-color: #121212;
 }
 
 .category-header {
   text-align: center;
   margin-bottom: 3rem;
   padding: 2rem;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .category-title {
@@ -90,11 +90,12 @@
 
 /* Dark Theme Adjustments */
 .dark-theme .home-container {
-  background-color: #1a1a1a;
+  background-color: #121212;
 }
 
 .dark-theme .category-header {
-  background: #2d3436;
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .dark-theme .category-title {

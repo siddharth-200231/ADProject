@@ -26,65 +26,12 @@ import { useNavigate } from 'react-router-dom';
 import { formatPrice } from '../utils/formatPrice';
 
 const generateDefaultSvg = (category) => {
-    const icons = {
-        Laptop: `<path d="M40,60 L260,60 Q270,60 270,70 L270,190 Q270,200 260,200 L40,200 Q30,200 30,190 L30,70 Q30,60 40,60 Z" fill="none" stroke="white" stroke-width="8"/>
-                 <rect x="45" y="75" width="210" height="110" fill="white" fill-opacity="0.2"/>
-                 <path d="M20,200 L280,200 L300,240 L0,240 Z" fill="none" stroke="white" stroke-width="8"/>
-                 <rect x="80" y="220" width="140" height="8" fill="white"/>
-                 <circle cx="150" cy="225" r="4" fill="white"/>`,
-        Mobile: `<path d="M100,20 L200,20 Q220,20 220,40 L220,260 Q220,280 200,280 L100,280 Q80,280 80,260 L80,40 Q80,20 100,20 Z" fill="none" stroke="white" stroke-width="8"/>
-                 <rect x="90" y="40" width="120" height="200" rx="2" fill="white" fill-opacity="0.2"/>
-                 <circle cx="150" cy="250" r="15" fill="white"/>
-                 <rect x="130" y="45" width="40" height="5" rx="2.5" fill="white"/>
-                 <circle cx="150" cy="45" r="2" fill="white" fill-opacity="0.5"/>`,
-        Headphone: `<path d="M80,150 Q80,80 150,80 Q220,80 220,150 L220,220 L200,220 L200,160 Q200,100 150,100 Q100,100 100,160 L100,220 L80,220 Z" fill="none" stroke="white" stroke-width="8"/>
-                    <path d="M60,180 Q40,180 40,200 L40,240 Q40,260 60,260 L80,260 Q100,260 100,240 L100,200 Q100,180 80,180 Z" fill="white"/>
-                    <path d="M220,180 Q200,180 200,200 L200,240 Q200,260 220,260 L240,260 Q260,260 260,240 L260,200 Q260,180 240,180 Z" fill="white"/>
-                    <circle cx="150" cy="140" r="5" fill="white" fill-opacity="0.5"/>`,
-        Electronics: `<path d="M40,80 L260,80 Q280,80 280,100 L280,200 Q280,220 260,220 L40,220 Q20,220 20,200 L20,100 Q20,80 40,80 Z" fill="none" stroke="white" stroke-width="8"/>
-                     <circle cx="150" cy="150" r="40" fill="none" stroke="white" stroke-width="8"/>
-                     <circle cx="150" cy="150" r="20" fill="white"/>
-                     <circle cx="250" cy="100" r="10" fill="white"/>
-                     <path d="M150,110 L150,190 M110,150 L190,150" stroke="white" stroke-width="4"/>`,
-        default: `<path d="M150,50 L250,150 L150,250 L50,150 Z" fill="none" stroke="white" stroke-width="8"/>
-                  <circle cx="150" cy="150" r="40" fill="none" stroke="white" stroke-width="8"/>
-                  <circle cx="150" cy="150" r="20" fill="white"/>
-                  <circle cx="150" cy="150" r="5" fill="white" fill-opacity="0.5"/>`
-    };
-
-    const colors = {
-        Laptop: ['#6366f1', '#4f46e5'],
-        Mobile: ['#ec4899', '#db2777'],
-        Headphone: ['#8b5cf6', '#7c3aed'],
-        Electronics: ['#14b8a6', '#0d9488'],
-        default: ['#64748b', '#475569']
-    };
-
-    const [primary, secondary] = colors[category] || colors.default;
-
     return `data:image/svg+xml,${encodeURIComponent(`
-        <svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-                <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:${primary};stop-opacity:1" />
-                    <stop offset="100%" style="stop-color:${secondary};stop-opacity:1" />
-                </linearGradient>
-                <pattern id="pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <circle cx="10" cy="10" r="1" fill="#fff" fill-opacity="0.15"/>
-                </pattern>
-                <filter id="glow">
-                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
-                    <feMerge>
-                        <feMergeNode in="coloredBlur"/>
-                        <feMergeNode in="SourceGraphic"/>
-                    </feMerge>
-                </filter>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grad)"/>
-            <rect width="100%" height="100%" fill="url(#pattern)"/>
-            <g filter="url(#glow)">
-                ${icons[category] || icons.default}
-            </g>
+        <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <rect width="200" height="200" fill="#f1f5f9"/>
+            <text x="50%" y="50%" font-family="Arial" font-size="14" fill="#64748b" text-anchor="middle">
+                ${category || 'No Image'}
+            </text>
         </svg>
     `)}`;
 };

@@ -90,54 +90,106 @@ const Home = ({ selectedCategory, searchQuery }) => {
   }
 
   return (
-    <Container 
-      maxWidth="xl" 
-      sx={{ 
-        py: { xs: 2, sm: 4 },
-        bgcolor: 'background.default',
-        minHeight: '100vh'
-      }}
-    >
-      {selectedCategory && selectedCategory !== 'All Categories' && (
-        <Box sx={{ mb: { xs: 2, sm: 4 } }}>
-          <Typography variant="h4" sx={{ 
-            fontSize: { xs: '1.5rem', sm: '2rem' },
-            fontWeight: 700 
+    <Box sx={{ 
+      minHeight: '100vh',
+      bgcolor: '#121212',
+      pt: 4,
+      pb: 6
+    }}>
+      <Container maxWidth="xl">
+        {selectedCategory && selectedCategory !== 'All Categories' && (
+          <Box sx={{ 
+            mb: 4,
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            p: 3,
+            bgcolor: '#1e1e1e',
+            borderRadius: 2,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.1)'
           }}>
-            {selectedCategory}
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            {filteredProducts.length} products found
-          </Typography>
-        </Box>
-      )}
+            <Box>
+              <Typography 
+                variant="h4" 
+                sx={{ 
+                  fontWeight: 700,
+                  color: '#ffffff'
+                }}
+              >
+                {selectedCategory}
+              </Typography>
+              <Typography 
+                variant="body1" 
+                sx={{ 
+                  color: '#9e9e9e',
+                  mt: 0.5 
+                }}
+              >
+                {filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} available
+              </Typography>
+            </Box>
+          </Box>
+        )}
 
-      {filteredProducts.length === 0 ? (
-        <Box sx={{ 
-          textAlign: 'center', 
-          py: { xs: 4, sm: 8 } 
-        }}>
-          <img 
-            src={unplugged} 
-            alt="No Products" 
-            style={{ 
-              maxWidth: '200px',
-              width: '100%' 
-            }} 
-          />
-          <Typography variant="h5" sx={{ mt: 2 }}>No Products Found</Typography>
-          <Typography color="text.secondary">Try adjusting your search or filters</Typography>
-        </Box>
-      ) : (
-        <Grid container spacing={{ xs: 2, sm: 3 }}>
-          {filteredProducts.map((product) => (
-            <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
-              <Card product={product} />
-            </Grid>
-          ))}
-        </Grid>
-      )}
-    </Container>
+        {filteredProducts.length === 0 ? (
+          <Box sx={{ 
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            minHeight: '60vh',
+            bgcolor: '#1e1e1e',
+            borderRadius: 2,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            p: 4
+          }}>
+            <img 
+              src={unplugged} 
+              alt="No Products" 
+              style={{ 
+                width: '120px',
+                marginBottom: '24px',
+                opacity: '0.7'
+              }} 
+            />
+            <Typography variant="h6" sx={{ fontWeight: 600, mb: 1, color: '#ffffff' }}>
+              No Products Found
+            </Typography>
+            <Typography sx={{ color: '#9e9e9e' }}>
+              Try adjusting your search or filters
+            </Typography>
+          </Box>
+        ) : (
+          <Grid 
+            container 
+            spacing={3}
+            sx={{
+              position: 'relative',
+              '& .MuiGrid-item': {
+                display: 'flex'
+              }
+            }}
+          >
+            {filteredProducts.map((product) => (
+              <Grid item xs={12} sm={6} md={4} lg={3} key={product.id}>
+                <Box sx={{ 
+                  width: '100%',
+                  transition: 'all 0.3s ease-in-out',
+                  '&:hover': {
+                    transform: 'translateY(-4px)',
+                    filter: 'brightness(1.1)'
+                  }
+                }}>
+                  <Card product={product} />
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+      </Container>
+    </Box>
   );
 };
 

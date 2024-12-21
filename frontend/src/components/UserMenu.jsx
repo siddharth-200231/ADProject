@@ -10,7 +10,6 @@ import {
 } from '@mui/material';
 import { 
     AccountCircle, 
-    ShoppingBag, 
     Logout 
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -41,10 +40,26 @@ const UserMenu = ({ user, onLogout }) => {
                     p: 0.5,
                     border: '2px solid',
                     borderColor: 'primary.main',
-                    '&:hover': { transform: 'scale(1.05)' }
+                    borderRadius: '50%',
+                    backgroundColor: 'primary.light',
+                    '&:hover': { 
+                        transform: 'scale(1.05)',
+                        backgroundColor: 'primary.main',
+                        '& .MuiAvatar-root': {
+                            color: 'primary.contrastText'
+                        }
+                    }
                 }}
             >
-                <Avatar sx={{ width: 32, height: 32 }}>
+                <Avatar 
+                    sx={{ 
+                        width: 32, 
+                        height: 32,
+                        bgcolor: 'transparent',
+                        color: 'primary.main',
+                        fontWeight: 'bold'
+                    }}
+                >
                     {user.name ? user.name[0].toUpperCase() : 'U'}
                 </Avatar>
             </IconButton>
@@ -53,31 +68,43 @@ const UserMenu = ({ user, onLogout }) => {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
                 PaperProps={{
-                    sx: { width: 220, mt: 1.5 }
+                    elevation: 3,
+                    sx: { 
+                        width: 200, 
+                        mt: 1.5,
+                        borderRadius: 2,
+                        '& .MuiMenuItem-root': {
+                            borderRadius: 1,
+                            mx: 1,
+                            my: 0.5
+                        }
+                    }
                 }}
             >
-                <MenuItem sx={{ py: 1 }}>
-                    <Typography variant="subtitle1" noWrap>
+                <MenuItem sx={{ py: 1.5 }}>
+                    <Typography variant="subtitle1" sx={{ fontWeight: 600 }} noWrap>
                         {user.name || 'User'}
                     </Typography>
                 </MenuItem>
                 <Typography
                     variant="body2"
                     color="text.secondary"
-                    sx={{ px: 2, pb: 1 }}
+                    sx={{ px: 2, pb: 2 }}
                 >
                     {user.email}
                 </Typography>
-                <Divider />
-                <MenuItem onClick={() => navigate('/orders')}>
+                <Divider sx={{ my: 1 }} />
+                <MenuItem 
+                    onClick={handleLogout}
+                    sx={{
+                        color: 'error.main',
+                        '&:hover': {
+                            backgroundColor: 'error.lighter'
+                        }
+                    }}
+                >
                     <ListItemIcon>
-                        <ShoppingBag fontSize="small" />
-                    </ListItemIcon>
-                    My Orders
-                </MenuItem>
-                <MenuItem onClick={handleLogout}>
-                    <ListItemIcon>
-                        <Logout fontSize="small" />
+                        <Logout fontSize="small" sx={{ color: 'error.main' }} />
                     </ListItemIcon>
                     Logout
                 </MenuItem>

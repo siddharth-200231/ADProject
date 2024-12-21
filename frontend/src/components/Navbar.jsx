@@ -349,13 +349,7 @@ const UserMenu = ({ anchorEl, handleClose, user, handleLogout }) => (
       </ListItemIcon>
       <ListItemText primary="Profile" />
     </MenuItem>
-    
-    <MenuItem onClick={handleClose} component={Link} to="/orders">
-      <ListItemIcon>
-        <ShoppingBagIcon fontSize="small" />
-      </ListItemIcon>
-      <ListItemText primary="Orders" />
-    </MenuItem>
+   
     
     <Divider sx={{ my: 1, borderColor: 'var(--glass-border)' }} />
     
