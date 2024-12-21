@@ -26,6 +26,7 @@ const AppContext = createContext({
   login: (userData) => {},
   logout: () => {},
   signup: (userData) => {},
+  clearCart: () => {},
 });
 
 export const AppProvider = ({ children }) => {
@@ -179,6 +180,12 @@ export const AppProvider = ({ children }) => {
     setCart([]);
   };
 
+  const clearCart = () => {
+    setCart([]); // Clear the cart array
+    // If you're storing cart in localStorage, clear that too
+    localStorage.removeItem('cart');
+  };
+
   useEffect(() => {
     refreshData();
   }, []);
@@ -196,7 +203,8 @@ export const AppProvider = ({ children }) => {
         refreshData,
         login,
         logout,
-        signup
+        signup,
+        clearCart
       }}
     >
       {children}

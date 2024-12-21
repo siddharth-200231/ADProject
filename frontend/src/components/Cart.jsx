@@ -24,7 +24,7 @@ import { teal, orange } from '@mui/material/colors';
 import { formatPrice } from '../utils/formatPrice';
 
 const Cart = () => {
-  const { cart, removeFromCart } = useContext(AppContext);
+  const { cart, removeFromCart, clearCart } = useContext(AppContext);
   const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const { showSuccess, showError } = useNotification();
@@ -46,7 +46,8 @@ const Cart = () => {
       
       if (response.status === 200) {
         showSuccess('Purchase completed successfully!');
-        // Clear cart or update UI
+        clearCart();
+        setCheckoutOpen(false);
       } else {
         showError(`Purchase failed: ${response.data?.message || 'Unknown error'}`);
       }
