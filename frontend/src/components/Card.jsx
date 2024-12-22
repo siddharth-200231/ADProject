@@ -207,7 +207,7 @@ const Card = React.memo(({ product }) => {
     };
 
     return (
-        <Fade in={true} timeout={600}>
+        <Fade in={true} timeout={800}>
             <MuiCard 
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
@@ -218,35 +218,35 @@ const Card = React.memo(({ product }) => {
                     flexDirection: 'column',
                     position: 'relative',
                     cursor: 'pointer',
-                    transition: 'all 0.2s ease-in-out',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     background: theme => theme.palette.mode === 'dark' 
-                        ? 'rgba(15, 23, 42, 0.6)'
-                        : 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: '16px',
+                        ? 'linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(23, 31, 50, 0.95))'
+                        : 'linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(250, 251, 254, 0.98))',
+                    backdropFilter: 'blur(24px)',
+                    borderRadius: '20px',
                     overflow: 'hidden',
                     border: theme => `1px solid ${
                         theme.palette.mode === 'dark' 
-                            ? 'rgba(255,255,255,0.05)'
-                            : 'rgba(0,0,0,0.05)'
+                            ? 'rgba(255,255,255,0.08)'
+                            : 'rgba(0,0,0,0.06)'
                     }`,
                     boxShadow: isHovered 
-                        ? '0 20px 40px rgba(0,0,0,0.12)'
-                        : '0 4px 12px rgba(0,0,0,0.05)',
-                    transform: isHovered ? 'translateY(-4px)' : 'none',
+                        ? '0 25px 50px -12px rgba(0,0,0,0.25), 0 8px 24px -8px rgba(0,0,0,0.15)'
+                        : '0 4px 16px rgba(0,0,0,0.08)',
+                    transform: isHovered ? 'translateY(-6px)' : 'none',
                 }}
             >
                 {/* Tech Specs Badge - Updated */}
                 <Box
                     sx={{
                         position: 'absolute',
-                        top: 12,
-                        left: 12,
+                        top: 16,
+                        left: 16,
                         zIndex: 2,
                         display: 'flex',
-                        gap: 0.75,
+                        gap: 1,
                         flexWrap: 'wrap',
-                        maxWidth: '75%'
+                        maxWidth: '70%'
                     }}
                 >
                     {product.specs?.map((spec, index) => (
@@ -256,15 +256,20 @@ const Card = React.memo(({ product }) => {
                             size="small"
                             onClick={(e) => e.stopPropagation()}
                             sx={{
-                                background: 'rgba(0, 0, 0, 0.65)',
-                                backdropFilter: 'blur(8px)',
+                                background: 'rgba(0, 0, 0, 0.75)',
+                                backdropFilter: 'blur(10px)',
                                 color: '#fff',
-                                fontSize: '0.7rem',
-                                height: '22px',
-                                borderRadius: '6px',
+                                fontSize: '0.75rem',
+                                height: '24px',
+                                borderRadius: '8px',
+                                transition: 'all 0.2s ease',
                                 '& .MuiChip-label': {
-                                    px: 1.25,
-                                    fontWeight: 500,
+                                    px: 1.5,
+                                    fontWeight: 600,
+                                },
+                                '&:hover': {
+                                    background: 'rgba(0, 0, 0, 0.85)',
+                                    transform: 'translateY(-1px)',
                                 }
                             }}
                         />
@@ -279,32 +284,35 @@ const Card = React.memo(({ product }) => {
                     }}
                     sx={{ 
                         position: 'absolute', 
-                        right: 12, 
-                        top: 12,
+                        right: 16, 
+                        top: 16,
                         zIndex: 2,
-                        background: 'rgba(255, 255, 255, 0.95)',
-                        backdropFilter: 'blur(8px)',
-                        width: 32,
-                        height: 32,
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                        background: 'rgba(255, 255, 255, 0.98)',
+                        backdropFilter: 'blur(10px)',
+                        width: 36,
+                        height: 36,
+                        boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
+                        transition: 'all 0.2s ease',
                         '&:hover': { 
                             background: 'rgba(255, 255, 255, 1)',
+                            transform: 'scale(1.05)',
                         }
                     }}
                 >
                     {isFavorite ? 
-                        <FavoriteIcon sx={{ color: '#f43f5e', fontSize: 18 }} /> : 
-                        <FavoriteBorderIcon sx={{ color: '#64748b', fontSize: 18 }} />
+                        <FavoriteIcon sx={{ color: '#f43f5e', fontSize: 20 }} /> : 
+                        <FavoriteBorderIcon sx={{ color: '#64748b', fontSize: 20 }} />
                     }
                 </IconButton>
 
                 {/* Image Container - Updated */}
                 <Box sx={{ 
                     position: 'relative', 
-                    pt: '80%',
+                    pt: '85%',
                     background: theme => theme.palette.mode === 'dark' 
-                        ? '#0f172a'
-                        : '#f8fafc',
+                        ? 'linear-gradient(145deg, #0f172a, #1e293b)'
+                        : 'linear-gradient(145deg, #f8fafc, #f1f5f9)',
+                    overflow: 'hidden',
                 }}>
                     <CardMedia
                         component="img"
@@ -318,19 +326,19 @@ const Card = React.memo(({ product }) => {
                             width: '100%',
                             height: '100%',
                             objectFit: 'cover',
-                            transition: 'transform 0.3s ease',
-                            transform: isHovered ? 'scale(1.03)' : 'none',
+                            transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            transform: isHovered ? 'scale(1.05)' : 'none',
+                            filter: 'brightness(1.02) contrast(1.02)',
                         }}
                     />
                 </Box>
 
-                {/* Content Section - Updated */}
-                <CardContent 
-                    sx={{ 
-                        flexGrow: 1, 
-                        p: 2,
-                    }}
-                >
+                {/* Content Section - Updated styling for remaining sections */}
+                <CardContent sx={{ 
+                    flexGrow: 1, 
+                    p: 2.5,
+                    pb: 2,
+                }}>
                     <Typography 
                         variant="h6" 
                         sx={{ 
@@ -440,9 +448,9 @@ const Card = React.memo(({ product }) => {
                 <CardActions 
                     onClick={(e) => e.stopPropagation()}
                     sx={{ 
-                        p: 2,
+                        p: 2.5,
                         pt: 0,
-                        gap: 1,
+                        gap: 1.5,
                     }}
                 >
                     <Button 
@@ -453,15 +461,20 @@ const Card = React.memo(({ product }) => {
                         }}
                         sx={{
                             flex: 1,
-                            py: 1,
-                            borderRadius: '8px',
+                            py: 1.25,
+                            borderRadius: '12px',
+                            borderWidth: '1.5px',
                             borderColor: theme => theme.palette.mode === 'dark'
-                                ? 'rgba(255,255,255,0.1)'
-                                : 'rgba(0,0,0,0.1)',
+                                ? 'rgba(255,255,255,0.15)'
+                                : 'rgba(0,0,0,0.12)',
                             color: theme => theme.palette.mode === 'dark' ? '#f1f5f9' : '#0f172a',
+                            fontWeight: 600,
+                            letterSpacing: '0.3px',
+                            transition: 'all 0.2s ease',
                             '&:hover': {
                                 borderColor: '#3b82f6',
                                 background: 'rgba(59, 130, 246, 0.08)',
+                                transform: 'translateY(-1px)',
                             }
                         }}
                     >
@@ -474,16 +487,21 @@ const Card = React.memo(({ product }) => {
                         disabled={!product.available}
                         sx={{
                             flex: 1,
-                            py: 1,
-                            borderRadius: '8px',
-                            background: '#3b82f6',
+                            py: 1.25,
+                            borderRadius: '12px',
+                            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                            fontWeight: 600,
+                            letterSpacing: '0.3px',
+                            transition: 'all 0.2s ease',
                             '&:hover': {
-                                background: '#2563eb',
+                                background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+                                transform: 'translateY(-1px)',
+                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
                             },
                             '&:disabled': {
                                 background: theme => theme.palette.mode === 'dark'
-                                    ? 'rgba(255,255,255,0.1)'
-                                    : 'rgba(0,0,0,0.1)',
+                                    ? 'rgba(255,255,255,0.12)'
+                                    : 'rgba(0,0,0,0.08)',
                             }
                         }}
                     >

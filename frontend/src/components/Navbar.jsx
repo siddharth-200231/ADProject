@@ -45,22 +45,25 @@ import Logo from './Logo';
 // Styled components
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
-  borderRadius: '8px',
-  backgroundColor: 'rgba(255, 255, 255, 0.08)',
-  border: '1px solid rgba(255, 255, 255, 0.1)',
+  borderRadius: '12px',
+  backgroundColor: 'rgba(255, 255, 255, 0.06)',
+  border: '1px solid rgba(255, 255, 255, 0.08)',
+  backdropFilter: 'blur(8px)',
   '&:hover': {
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    backgroundColor: 'rgba(255, 255, 255, 0.09)',
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+    boxShadow: '0 0 20px rgba(138, 43, 226, 0.15)',
   },
   '&:focus-within': {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    backgroundColor: 'rgba(255, 255, 255, 0.12)',
+    borderColor: 'rgba(138, 43, 226, 0.3)',
+    boxShadow: '0 0 25px rgba(138, 43, 226, 0.2)',
   },
   marginRight: theme.spacing(2),
   marginLeft: 0,
   width: '100%',
   maxWidth: '500px',
-  transition: 'all 0.2s ease',
+  transition: 'all 0.3s ease',
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -154,13 +157,18 @@ const CategoryMenu = ({ onSelectCategory }) => {
           textTransform: 'none',
           fontSize: '0.9rem',
           fontWeight: 500,
-          background: 'rgba(255, 255, 255, 0.08)',
-          borderRadius: '6px',
+          background: 'rgba(255, 255, 255, 0.06)',
+          backdropFilter: 'blur(8px)',
+          borderRadius: '12px',
           padding: '8px 16px',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
           '&:hover': {
-            background: 'rgba(255, 255, 255, 0.12)',
+            background: 'rgba(255, 255, 255, 0.09)',
+            borderColor: 'rgba(255, 255, 255, 0.15)',
+            transform: 'translateY(-2px)',
+            boxShadow: '0 4px 15px rgba(138, 43, 226, 0.15)',
           },
-          transition: 'all 0.2s ease',
+          transition: 'all 0.3s ease',
         }}
       >
         Categories
@@ -428,10 +436,15 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
       position="sticky" 
       className="navbar" 
       sx={{ 
-        background: 'rgba(22, 28, 36, 0.95)',
-        backdropFilter: 'blur(8px)',
-        boxShadow: '0 1px 2px rgba(0, 0, 0, 0.1)',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+        background: 'rgba(22, 28, 36, 0.85)',
+        backdropFilter: 'blur(12px)',
+        boxShadow: 'none',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        transition: 'all 0.3s ease',
+        '&:hover': {
+          background: 'rgba(22, 28, 36, 0.9)',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+        }
       }}
     >
       <Container maxWidth="xl">
@@ -533,11 +546,16 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
               onClick={() => navigate('/cart')}
               sx={{
                 p: 1,
-                background: 'rgba(255, 255, 255, 0.08)',
-                borderRadius: '6px',
+                background: 'rgba(255, 255, 255, 0.06)',
+                backdropFilter: 'blur(8px)',
+                borderRadius: '12px',
+                border: '1px solid rgba(255, 255, 255, 0.08)',
                 '&:hover': {
-                  background: 'rgba(255, 255, 255, 0.12)',
+                  background: 'rgba(255, 255, 255, 0.09)',
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 15px rgba(138, 43, 226, 0.15)',
                 },
+                transition: 'all 0.3s ease',
               }}
             >
               <Badge 
@@ -607,13 +625,18 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
                 sx={{
                   display: { xs: 'none', sm: 'flex' },
                   fontSize: '0.875rem',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  borderRadius: '6px',
-                  padding: '6px 16px',
+                  background: 'linear-gradient(135deg, rgba(138, 43, 226, 0.8), rgba(63, 81, 181, 0.8))',
+                  borderRadius: '12px',
+                  padding: '8px 20px',
                   textTransform: 'none',
+                  border: '1px solid rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(8px)',
                   '&:hover': {
-                    background: 'rgba(255, 255, 255, 0.15)',
-                  }
+                    background: 'linear-gradient(135deg, rgba(138, 43, 226, 0.9), rgba(63, 81, 181, 0.9))',
+                    transform: 'translateY(-2px)',
+                    boxShadow: '0 4px 15px rgba(138, 43, 226, 0.3)',
+                  },
+                  transition: 'all 0.3s ease',
                 }}
               >
                 Login

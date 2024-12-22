@@ -4,24 +4,24 @@ export const getTheme = (mode) => createTheme({
   palette: {
     mode,
     primary: {
-      main: '#6366f1',
-      light: '#818cf8',
-      dark: '#4f46e5',
+      main: '#3b82f6',
+      light: '#60a5fa',
+      dark: '#2563eb',
     },
     secondary: {
-      main: '#ec4899',
-      light: '#f472b6',
-      dark: '#db2777',
+      main: '#8b5cf6',
+      light: '#a78bfa',
+      dark: '#7c3aed',
     },
     background: {
-      default: mode === 'dark' ? '#0f172a' : '#f8fafc',
-      paper: mode === 'dark' ? '#1e293b' : '#ffffff',
+      default: mode === 'dark' ? '#111827' : '#ffffff',
+      paper: mode === 'dark' ? '#1f2937' : '#f8fafc',
     },
     text: {
-      primary: mode === 'dark' ? '#f1f5f9' : '#0f172a',
-      secondary: mode === 'dark' ? '#94a3b8' : '#64748b',
+      primary: mode === 'dark' ? '#f3f4f6' : '#111827',
+      secondary: mode === 'dark' ? '#9ca3af' : '#4b5563',
     },
-    divider: mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)',
+    divider: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
   },
   typography: {
     fontFamily: "'Inter', 'system-ui', sans-serif",
@@ -64,10 +64,10 @@ export const getTheme = (mode) => createTheme({
           }
         },
         contained: {
-          backgroundImage: 'linear-gradient(to right, #6366f1, #4f46e5)',
-          boxShadow: '0 4px 6px -1px rgba(99, 102, 241, 0.2)',
+          backgroundImage: 'linear-gradient(to right, #3b82f6, #2563eb)',
+          boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.2)',
           '&:hover': {
-            backgroundImage: 'linear-gradient(to right, #4f46e5, #4338ca)',
+            backgroundImage: 'linear-gradient(to right, #2563eb, #1d4ed8)',
           }
         }
       }
