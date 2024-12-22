@@ -28,10 +28,110 @@ import { formatPrice } from '../utils/formatPrice';
 const generateDefaultSvg = (category) => {
     return `data:image/svg+xml,${encodeURIComponent(`
         <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-            <rect width="200" height="200" fill="#f1f5f9"/>
-            <text x="50%" y="50%" font-family="Arial" font-size="14" fill="#64748b" text-anchor="middle">
-                ${category || 'No Image'}
-            </text>
+            <defs>
+                <!-- Primary Gradient -->
+                <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#f8fafc;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
+                </linearGradient>
+                
+                <!-- Accent Gradients -->
+                <linearGradient id="accentGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.7" />
+                    <stop offset="100%" style="stop-color:#2563eb;stop-opacity:0.7" />
+                </linearGradient>
+                
+                <linearGradient id="accentGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.7" />
+                    <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.7" />
+                </linearGradient>
+                
+                <linearGradient id="accentGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.7" />
+                    <stop offset="100%" style="stop-color:#d946ef;stop-opacity:0.7" />
+                </linearGradient>
+
+                <!-- Patterns -->
+                <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#cbd5e1" stroke-width="0.5"/>
+                </pattern>
+                
+                <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <circle cx="10" cy="10" r="1" fill="#94a3b8" opacity="0.3"/>
+                </pattern>
+
+                <!-- Filters -->
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+
+                <filter id="shadow">
+                    <feDropShadow dx="0" dy="4" stdDeviation="4" flood-opacity="0.15"/>
+                </filter>
+            </defs>
+
+            <!-- Background Structure -->
+            <rect width="200" height="200" fill="url(#primaryGrad)"/>
+            <rect width="200" height="200" fill="url(#grid)"/>
+            <rect width="200" height="200" fill="url(#dots)"/>
+
+            <!-- Decorative Circles -->
+            <circle cx="40" cy="40" r="80" fill="url(#accentGrad1)" opacity="0.05"/>
+            <circle cx="160" cy="160" r="100" fill="url(#accentGrad2)" opacity="0.05"/>
+            <circle cx="100" cy="100" r="60" fill="url(#accentGrad3)" opacity="0.05"/>
+
+            <!-- Dynamic Lines -->
+            <path d="M20 100 Q60 80 100 100 T180 100" stroke="#3b82f6" fill="none" 
+                stroke-width="2" opacity="0.3" filter="url(#glow)"/>
+            <path d="M20 120 Q60 140 100 120 T180 120" stroke="#8b5cf6" fill="none" 
+                stroke-width="2" opacity="0.3" filter="url(#glow)"/>
+
+            <!-- Central Icon Container -->
+            <g transform="translate(100, 85)" filter="url(#shadow)">
+                <circle cx="0" cy="0" r="35" fill="white" opacity="0.95"/>
+                <circle cx="0" cy="0" r="28" fill="url(#accentGrad1)" opacity="0.1"/>
+                <path d="M-20 0 Q0 -20 20 0 Q0 20 -20 0" 
+                    fill="none" stroke="#3b82f6" stroke-width="2.5" opacity="0.6"/>
+            </g>
+
+            <!-- Modern Category Badge -->
+            <g transform="translate(100, 140)">
+                <rect x="-70" y="-15" width="140" height="30" rx="15" 
+                    fill="white" opacity="0.95" filter="url(#shadow)"/>
+                <text 
+                    x="0" 
+                    y="6" 
+                    font-family="'Inter', system-ui, sans-serif" 
+                    font-size="13" 
+                    fill="#1e293b" 
+                    text-anchor="middle" 
+                    font-weight="600"
+                    letter-spacing="0.5"
+                >
+                    ${category || 'No Image'}
+                </text>
+            </g>
+
+            <!-- Corner Accents -->
+            <path d="M0 0 L40 0 L40 3 L3 3 L3 40 L0 40 Z" fill="url(#accentGrad1)" opacity="0.3"/>
+            <path d="M200 0 L160 0 L160 3 L197 3 L197 40 L200 40 Z" fill="url(#accentGrad2)" opacity="0.3"/>
+            <path d="M0 200 L40 200 L40 197 L3 197 L3 160 L0 160 Z" fill="url(#accentGrad2)" opacity="0.3"/>
+            <path d="M200 200 L160 200 L160 197 L197 197 L197 160 L200 160 Z" fill="url(#accentGrad3)" opacity="0.3"/>
+
+            <!-- Abstract Shapes -->
+            <circle cx="30" cy="170" r="15" fill="url(#accentGrad1)" opacity="0.1"/>
+            <circle cx="170" cy="30" r="15" fill="url(#accentGrad3)" opacity="0.1"/>
+            
+            <!-- Floating Elements -->
+            <g transform="translate(50, 50)">
+                <circle cx="0" cy="0" r="4" fill="#3b82f6" opacity="0.3"/>
+                <circle cx="100" cy="100" r="4" fill="#8b5cf6" opacity="0.3"/>
+                <circle cx="80" cy="20" r="4" fill="#ec4899" opacity="0.3"/>
+            </g>
         </svg>
     `)}`;
 };
