@@ -35,29 +35,54 @@ const generateDefaultSvg = (category) => {
                     <stop offset="100%" style="stop-color:#e2e8f0;stop-opacity:1" />
                 </linearGradient>
                 
-                <!-- Accent Gradients -->
+                <!-- Extended Accent Gradients -->
                 <linearGradient id="accentGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.7" />
-                    <stop offset="100%" style="stop-color:#2563eb;stop-opacity:0.7" />
+                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#2563eb;stop-opacity:0.8" />
                 </linearGradient>
                 
                 <linearGradient id="accentGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.7" />
-                    <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.7" />
+                    <stop offset="0%" style="stop-color:#8b5cf6;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#6366f1;stop-opacity:0.8" />
                 </linearGradient>
                 
                 <linearGradient id="accentGrad3" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.7" />
-                    <stop offset="100%" style="stop-color:#d946ef;stop-opacity:0.7" />
+                    <stop offset="0%" style="stop-color:#ec4899;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#d946ef;stop-opacity:0.8" />
                 </linearGradient>
 
-                <!-- Patterns -->
+                <!-- Enhanced New Gradients -->
+                <linearGradient id="accentGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#059669;stop-opacity:0.8" />
+                </linearGradient>
+
+                <linearGradient id="accentGrad5" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#d97706;stop-opacity:0.8" />
+                </linearGradient>
+
+                <linearGradient id="accentGrad6" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#ef4444;stop-opacity:0.8" />
+                    <stop offset="100%" style="stop-color:#dc2626;stop-opacity:0.8" />
+                </linearGradient>
+
+                <!-- New Rainbow Gradient -->
+                <linearGradient id="rainbowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.6" />
+                    <stop offset="25%" style="stop-color:#8b5cf6;stop-opacity:0.6" />
+                    <stop offset="50%" style="stop-color:#ec4899;stop-opacity:0.6" />
+                    <stop offset="75%" style="stop-color:#f59e0b;stop-opacity:0.6" />
+                    <stop offset="100%" style="stop-color:#10b981;stop-opacity:0.6" />
+                </linearGradient>
+
+                <!-- Enhanced Patterns -->
                 <pattern id="grid" x="0" y="0" width="40" height="40" patternUnits="userSpaceOnUse">
-                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#cbd5e1" stroke-width="0.5"/>
+                    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#cbd5e1" stroke-width="0.8"/>
                 </pattern>
                 
                 <pattern id="dots" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <circle cx="10" cy="10" r="1" fill="#94a3b8" opacity="0.3"/>
+                    <circle cx="10" cy="10" r="1.5" fill="#94a3b8" opacity="0.4"/>
                 </pattern>
 
                 <!-- Filters -->
@@ -79,16 +104,32 @@ const generateDefaultSvg = (category) => {
             <rect width="200" height="200" fill="url(#grid)"/>
             <rect width="200" height="200" fill="url(#dots)"/>
 
-            <!-- Decorative Circles -->
-            <circle cx="40" cy="40" r="80" fill="url(#accentGrad1)" opacity="0.05"/>
-            <circle cx="160" cy="160" r="100" fill="url(#accentGrad2)" opacity="0.05"/>
-            <circle cx="100" cy="100" r="60" fill="url(#accentGrad3)" opacity="0.05"/>
+            <!-- Enhanced Decorative Circles -->
+            <circle cx="40" cy="40" r="100" fill="url(#rainbowGrad)" opacity="0.1"/>
+            <circle cx="160" cy="160" r="120" fill="url(#accentGrad2)" opacity="0.08"/>
+            <circle cx="100" cy="100" r="80" fill="url(#accentGrad3)" opacity="0.07"/>
+            <circle cx="180" cy="40" r="60" fill="url(#accentGrad4)" opacity="0.06"/>
+            <circle cx="20" cy="160" r="50" fill="url(#accentGrad5)" opacity="0.05"/>
 
-            <!-- Dynamic Lines -->
-            <path d="M20 100 Q60 80 100 100 T180 100" stroke="#3b82f6" fill="none" 
+            <!-- Enhanced Dynamic Lines -->
+            <path d="M20 100 Q60 80 100 100 T180 100" stroke="url(#rainbowGrad)" fill="none" 
+                stroke-width="3" opacity="0.4" filter="url(#glow)"/>
+            <path d="M20 120 Q60 140 100 120 T180 120" stroke="url(#accentGrad2)" fill="none" 
+                stroke-width="2.5" opacity="0.35" filter="url(#glow)"/>
+            <path d="M40 80 Q80 60 120 80 T200 80" stroke="url(#accentGrad4)" fill="none" 
                 stroke-width="2" opacity="0.3" filter="url(#glow)"/>
-            <path d="M20 120 Q60 140 100 120 T180 120" stroke="#8b5cf6" fill="none" 
-                stroke-width="2" opacity="0.3" filter="url(#glow)"/>
+            <path d="M0 140 Q40 160 80 140 T160 140" stroke="url(#accentGrad5)" fill="none" 
+                stroke-width="2" opacity="0.25" filter="url(#glow)"/>
+
+            <!-- Enhanced Floating Elements -->
+            <g transform="translate(50, 50)">
+                <circle cx="0" cy="0" r="6" fill="url(#accentGrad1)" opacity="0.4"/>
+                <circle cx="100" cy="100" r="6" fill="url(#accentGrad2)" opacity="0.4"/>
+                <circle cx="80" cy="20" r="5" fill="url(#accentGrad3)" opacity="0.4"/>
+                <circle cx="20" cy="80" r="4" fill="url(#accentGrad4)" opacity="0.4"/>
+                <circle cx="60" cy="40" r="4" fill="url(#accentGrad5)" opacity="0.4"/>
+                <circle cx="120" cy="60" r="4" fill="url(#accentGrad6)" opacity="0.4"/>
+            </g>
 
             <!-- Central Icon Container -->
             <g transform="translate(100, 85)" filter="url(#shadow)">
@@ -125,13 +166,6 @@ const generateDefaultSvg = (category) => {
             <!-- Abstract Shapes -->
             <circle cx="30" cy="170" r="15" fill="url(#accentGrad1)" opacity="0.1"/>
             <circle cx="170" cy="30" r="15" fill="url(#accentGrad3)" opacity="0.1"/>
-            
-            <!-- Floating Elements -->
-            <g transform="translate(50, 50)">
-                <circle cx="0" cy="0" r="4" fill="#3b82f6" opacity="0.3"/>
-                <circle cx="100" cy="100" r="4" fill="#8b5cf6" opacity="0.3"/>
-                <circle cx="80" cy="20" r="4" fill="#ec4899" opacity="0.3"/>
-            </g>
         </svg>
     `)}`;
 };
