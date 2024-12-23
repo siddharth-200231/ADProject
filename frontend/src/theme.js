@@ -4,24 +4,24 @@ export const getTheme = (mode) => createTheme({
   palette: {
     mode,
     primary: {
-      main: '#3b82f6',
-      light: '#60a5fa',
-      dark: '#2563eb',
+      main: '#000000',
+      light: '#404040',
+      dark: '#000000',
     },
     secondary: {
-      main: '#8b5cf6',
-      light: '#a78bfa',
-      dark: '#7c3aed',
+      main: '#666666',
+      light: '#808080',
+      dark: '#404040',
     },
     background: {
-      default: mode === 'dark' ? '#111827' : '#ffffff',
-      paper: mode === 'dark' ? '#1f2937' : '#f8fafc',
+      default: mode === 'dark' ? '#000000' : '#ffffff',
+      paper: mode === 'dark' ? '#121212' : '#f5f5f5',
     },
     text: {
-      primary: mode === 'dark' ? '#f3f4f6' : '#111827',
-      secondary: mode === 'dark' ? '#9ca3af' : '#4b5563',
+      primary: mode === 'dark' ? '#ffffff' : '#000000',
+      secondary: mode === 'dark' ? '#b3b3b3' : '#666666',
     },
-    divider: mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)',
+    divider: mode === 'dark' ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)',
   },
   typography: {
     fontFamily: "'Inter', 'system-ui', sans-serif",
@@ -46,9 +46,9 @@ export const getTheme = (mode) => createTheme({
       styleOverrides: {
         root: {
           backgroundImage: 'none',
-          backgroundColor: mode === 'dark' ? 'rgba(30, 41, 59, 0.5)' : 'rgba(255, 255, 255, 0.8)',
+          backgroundColor: mode === 'dark' ? 'rgba(18, 18, 18, 0.8)' : 'rgba(255, 255, 255, 0.8)',
           backdropFilter: 'blur(20px)',
-          border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)'}`,
+          border: `1px solid ${mode === 'dark' ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'}`,
           transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
         }
       }
@@ -64,10 +64,12 @@ export const getTheme = (mode) => createTheme({
           }
         },
         contained: {
-          backgroundImage: 'linear-gradient(to right, #3b82f6, #2563eb)',
-          boxShadow: '0 4px 6px -1px rgba(59, 130, 246, 0.2)',
+          backgroundImage: 'none',
+          backgroundColor: mode === 'dark' ? '#ffffff' : '#000000',
+          color: mode === 'dark' ? '#000000' : '#ffffff',
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.2)',
           '&:hover': {
-            backgroundImage: 'linear-gradient(to right, #2563eb, #1d4ed8)',
+            backgroundColor: mode === 'dark' ? '#e0e0e0' : '#404040',
           }
         }
       }

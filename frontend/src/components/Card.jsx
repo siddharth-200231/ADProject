@@ -170,13 +170,17 @@ const generateDefaultSvg = (category) => {
     `)}`;
 };
 
-// Updated gradient and color palette
+// Updated gradient palette with more unique combinations
 const getGradients = (isDark) => ({
     primary: isDark 
-        ? 'linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(23, 31, 50, 0.98) 100%)'
-        : 'linear-gradient(135deg, rgba(255, 255, 255, 0.98) 0%, rgba(250, 251, 254, 0.98) 100%)',
-    accent: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-    hover: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)'
+        ? 'linear-gradient(135deg, #1a1c20 0%, #2d3748 50%, #1a1c20 100%)'
+        : 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 50%, #ffffff 100%)',
+    accent: isDark
+        ? 'linear-gradient(135deg, #2d3748 0%, #1a1c20 50%, #2d3748 100%)'
+        : 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 50%, #f8f9fa 100%)',
+    hover: isDark
+        ? 'linear-gradient(135deg, #000000 0%, #1a1c20 50%, #000000 100%)'
+        : 'linear-gradient(135deg, #f1f5f9 0%, #ffffff 50%, #f1f5f9 100%)'
 });
 
 const Card = React.memo(({ product }) => {
@@ -220,23 +224,40 @@ const Card = React.memo(({ product }) => {
                     cursor: 'pointer',
                     transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     background: theme => theme.palette.mode === 'dark' 
-                        ? 'linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(23, 31, 50, 0.95))'
-                        : 'linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(250, 251, 254, 0.98))',
-                    backdropFilter: 'blur(24px)',
-                    borderRadius: '20px',
+                        ? 'linear-gradient(145deg, rgba(26, 28, 32, 0.95), rgba(45, 55, 72, 0.95), rgba(26, 28, 32, 0.95))'
+                        : 'linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95), rgba(255, 255, 255, 0.95))',
+                    backdropFilter: 'blur(10px)',
+                    borderRadius: '16px',
                     overflow: 'hidden',
                     border: theme => `1px solid ${
                         theme.palette.mode === 'dark' 
-                            ? 'rgba(255,255,255,0.08)'
-                            : 'rgba(0,0,0,0.06)'
+                            ? 'rgba(255,255,255,0.1)'
+                            : 'rgba(0,0,0,0.05)'
                     }`,
                     boxShadow: isHovered 
-                        ? '0 25px 50px -12px rgba(0,0,0,0.25), 0 8px 24px -8px rgba(0,0,0,0.15)'
-                        : '0 4px 16px rgba(0,0,0,0.08)',
+                        ? theme => theme.palette.mode === 'dark'
+                            ? '0 25px 50px -12px rgba(0,0,0,0.5)'
+                            : '0 25px 50px -12px rgba(0,0,0,0.15)'
+                        : theme => theme.palette.mode === 'dark'
+                            ? '0 4px 16px rgba(0,0,0,0.3)'
+                            : '0 4px 16px rgba(0,0,0,0.06)',
                     transform: isHovered ? 'translateY(-6px)' : 'none',
+                    '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: theme => theme.palette.mode === 'dark'
+                            ? 'linear-gradient(45deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05))'
+                            : 'linear-gradient(45deg, rgba(59, 130, 246, 0.03), rgba(139, 92, 246, 0.03))',
+                        borderRadius: 'inherit',
+                        pointerEvents: 'none'
+                    },
                 }}
             >
-                {/* Tech Specs Badge - Updated */}
+                {/* Updated Tech Specs Badge */}
                 <Box
                     sx={{
                         position: 'absolute',
@@ -256,20 +277,21 @@ const Card = React.memo(({ product }) => {
                             size="small"
                             onClick={(e) => e.stopPropagation()}
                             sx={{
-                                background: 'rgba(0, 0, 0, 0.75)',
-                                backdropFilter: 'blur(10px)',
-                                color: '#fff',
+                                background: theme => theme.palette.mode === 'dark'
+                                    ? 'rgba(255, 255, 255, 0.1)'
+                                    : 'rgba(0, 0, 0, 0.75)',
+                                color: theme => theme.palette.mode === 'dark'
+                                    ? '#ffffff'
+                                    : '#ffffff',
                                 fontSize: '0.75rem',
                                 height: '24px',
-                                borderRadius: '8px',
-                                transition: 'all 0.2s ease',
+                                borderRadius: '4px',
                                 '& .MuiChip-label': {
                                     px: 1.5,
-                                    fontWeight: 600,
+                                    fontWeight: 500,
                                 },
                                 '&:hover': {
-                                    background: 'rgba(0, 0, 0, 0.85)',
-                                    transform: 'translateY(-1px)',
+                                    background: '#000000',
                                 }
                             }}
                         />
@@ -310,9 +332,21 @@ const Card = React.memo(({ product }) => {
                     position: 'relative', 
                     pt: '85%',
                     background: theme => theme.palette.mode === 'dark' 
-                        ? 'linear-gradient(145deg, #0f172a, #1e293b)'
-                        : 'linear-gradient(145deg, #f8fafc, #f1f5f9)',
+                        ? 'linear-gradient(145deg, #1a1c20, #2d3748, #1a1c20)'
+                        : 'linear-gradient(145deg, #ffffff, #f8f9fa, #ffffff)',
                     overflow: 'hidden',
+                    '&::after': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
+                        background: theme => theme.palette.mode === 'dark'
+                            ? 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.2) 100%)'
+                            : 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.2) 100%)',
+                        zIndex: 1
+                    }
                 }}>
                     <CardMedia
                         component="img"
@@ -343,9 +377,11 @@ const Card = React.memo(({ product }) => {
                         variant="h6" 
                         sx={{ 
                             fontSize: '1.1rem',
-                            fontWeight: 600,
+                            fontWeight: 700,
                             mb: 1.5,
-                            color: theme => theme.palette.mode === 'dark' ? '#f1f5f9' : '#0f172a',
+                            color: theme => theme.palette.mode === 'dark' 
+                                ? '#FFFFFF'
+                                : '#000000',
                             lineHeight: 1.3,
                         }}
                     >
@@ -364,12 +400,19 @@ const Card = React.memo(({ product }) => {
                                 size="small" 
                                 sx={{ 
                                     background: theme => theme.palette.mode === 'dark' 
-                                        ? 'rgba(59, 130, 246, 0.15)'
-                                        : 'rgba(59, 130, 246, 0.1)',
-                                    color: '#3b82f6',
+                                        ? 'rgba(255, 255, 255, 0.15)'
+                                        : 'rgba(0, 0, 0, 0.15)',
+                                    color: theme => theme.palette.mode === 'dark' 
+                                        ? '#FFFFFF'
+                                        : '#000000',
                                     borderRadius: '6px',
                                     height: '24px',
-                                    fontWeight: 500,
+                                    fontWeight: 600,
+                                    '& .MuiChip-label': {
+                                        textShadow: theme => theme.palette.mode === 'dark'
+                                            ? '0 1px 2px rgba(0,0,0,0.3)'
+                                            : 'none',
+                                    }
                                 }}
                             />
                         )}
@@ -422,9 +465,12 @@ const Card = React.memo(({ product }) => {
                             sx={{ 
                                 fontWeight: 700,
                                 color: theme => theme.palette.mode === 'dark' 
-                                    ? '#f1f5f9'
-                                    : '#0f172a',
-                                fontSize: '1.25rem'
+                                    ? '#FFFFFF'
+                                    : '#000000',
+                                fontSize: '1.25rem',
+                                textShadow: theme => theme.palette.mode === 'dark'
+                                    ? '0 1px 2px rgba(0,0,0,0.3)'
+                                    : 'none',
                             }}
                         >
                             {formatPrice(product.price)}
@@ -462,19 +508,17 @@ const Card = React.memo(({ product }) => {
                         sx={{
                             flex: 1,
                             py: 1.25,
-                            borderRadius: '12px',
-                            borderWidth: '1.5px',
-                            borderColor: theme => theme.palette.mode === 'dark'
-                                ? 'rgba(255,255,255,0.15)'
-                                : 'rgba(0,0,0,0.12)',
-                            color: theme => theme.palette.mode === 'dark' ? '#f1f5f9' : '#0f172a',
+                            borderRadius: '8px',
+                            borderWidth: '1px',
+                            borderColor: theme => theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+                            backgroundColor: 'transparent',
+                            color: theme => theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
                             fontWeight: 600,
-                            letterSpacing: '0.3px',
+                            letterSpacing: '0.5px',
                             transition: 'all 0.2s ease',
                             '&:hover': {
-                                borderColor: '#3b82f6',
-                                background: 'rgba(59, 130, 246, 0.08)',
-                                transform: 'translateY(-1px)',
+                                borderColor: theme => theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+                                backgroundColor: 'rgba(0, 0, 0, 0.05)',
                             }
                         }}
                     >
@@ -488,20 +532,26 @@ const Card = React.memo(({ product }) => {
                         sx={{
                             flex: 1,
                             py: 1.25,
-                            borderRadius: '12px',
-                            background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+                            borderRadius: '8px',
+                            background: theme => theme.palette.mode === 'dark'
+                                ? 'linear-gradient(45deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)'
+                                : 'linear-gradient(45deg, #000000 0%, #171717 50%, #404040 100%)',
+                            color: '#FFFFFF',
                             fontWeight: 600,
-                            letterSpacing: '0.3px',
+                            letterSpacing: '0.5px',
                             transition: 'all 0.2s ease',
                             '&:hover': {
-                                background: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
-                                transform: 'translateY(-1px)',
-                                boxShadow: '0 4px 12px rgba(37, 99, 235, 0.3)',
+                                background: theme => theme.palette.mode === 'dark'
+                                    ? 'linear-gradient(45deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%)'
+                                    : 'linear-gradient(45deg, #171717 0%, #404040 50%, #737373 100%)',
+                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
+                                transform: 'translateY(-1px)'
+                            },
+                            '&:active': {
+                                transform: 'translateY(0px)'
                             },
                             '&:disabled': {
-                                background: theme => theme.palette.mode === 'dark'
-                                    ? 'rgba(255,255,255,0.12)'
-                                    : 'rgba(0,0,0,0.08)',
+                                background: 'rgba(0, 0, 0, 0.12)',
                             }
                         }}
                     >

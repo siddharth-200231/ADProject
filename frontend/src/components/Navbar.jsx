@@ -436,14 +436,14 @@ const Navbar = ({ onSearch, onSelectCategory }) => {
       position="sticky" 
       className="navbar" 
       sx={{ 
-        background: 'rgba(22, 28, 36, 0.85)',
+        background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.95), rgba(255, 255, 255, 0.1))',
         backdropFilter: 'blur(12px)',
         boxShadow: 'none',
-        borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
         transition: 'all 0.3s ease',
         '&:hover': {
-          background: 'rgba(22, 28, 36, 0.9)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+          background: 'linear-gradient(135deg, rgba(0, 0, 0, 0.98), rgba(255, 255, 255, 0.15))',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.15)',
         }
       }}
     >
