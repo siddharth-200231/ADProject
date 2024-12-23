@@ -1,6 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import AppContext from '../Context/Context';
 import { useNotification } from '../hooks/useNotification';
+import defaultImg from '../assets/img.png';
 import { 
     Card as MuiCard,
     CardContent,
@@ -185,14 +186,9 @@ const getGradients = (isDark) => ({
 
 const Card = React.memo(({ product }) => {
     const navigate = useNavigate();
-    const [isFavorite, setIsFavorite] = React.useState(false);
-    const [isHovered, setIsHovered] = React.useState(false);
     const { addToCart, user } = useContext(AppContext);
     const { showSuccess, showError } = useNotification();
     const theme = useTheme();
-
-    const gradients = React.useMemo(() => getGradients(theme.palette.mode === 'dark'), 
-        [theme.palette.mode]);
 
     const handleAddToCart = async (e) => {
         e.stopPropagation();
@@ -213,312 +209,151 @@ const Card = React.memo(({ product }) => {
     return (
         <Fade in={true} timeout={800}>
             <MuiCard 
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
                 onClick={() => navigate(`/product/${product.id}`)}
                 sx={{ 
-                    height: '100%', 
-                    display: 'flex', 
+                    height: '100%',
+                    display: 'flex',
                     flexDirection: 'column',
                     position: 'relative',
                     cursor: 'pointer',
-                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    transition: 'all 0.3s ease',
                     background: theme => theme.palette.mode === 'dark' 
-                        ? 'linear-gradient(145deg, rgba(26, 28, 32, 0.95), rgba(45, 55, 72, 0.95), rgba(26, 28, 32, 0.95))'
-                        : 'linear-gradient(145deg, rgba(255, 255, 255, 0.95), rgba(248, 250, 252, 0.95), rgba(255, 255, 255, 0.95))',
-                    backdropFilter: 'blur(10px)',
-                    borderRadius: '16px',
+                        ? 'linear-gradient(145deg, #1E293B 0%, #334155 100%)'
+                        : 'linear-gradient(145deg, #ffffff 0%, #f8fafc 100%)',
+                    borderRadius: '12px',
                     overflow: 'hidden',
-                    border: theme => `1px solid ${
-                        theme.palette.mode === 'dark' 
-                            ? 'rgba(255,255,255,0.1)'
-                            : 'rgba(0,0,0,0.05)'
-                    }`,
-                    boxShadow: isHovered 
-                        ? theme => theme.palette.mode === 'dark'
-                            ? '0 25px 50px -12px rgba(0,0,0,0.5)'
-                            : '0 25px 50px -12px rgba(0,0,0,0.15)'
-                        : theme => theme.palette.mode === 'dark'
-                            ? '0 4px 16px rgba(0,0,0,0.3)'
-                            : '0 4px 16px rgba(0,0,0,0.06)',
-                    transform: isHovered ? 'translateY(-6px)' : 'none',
-                    '&::before': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: theme => theme.palette.mode === 'dark'
-                            ? 'linear-gradient(45deg, rgba(59, 130, 246, 0.05), rgba(139, 92, 246, 0.05))'
-                            : 'linear-gradient(45deg, rgba(59, 130, 246, 0.03), rgba(139, 92, 246, 0.03))',
-                        borderRadius: 'inherit',
-                        pointerEvents: 'none'
-                    },
+                    border: '1px solid rgba(255,255,255,0.1)',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
+                    '&:hover': {
+                        transform: 'translateY(-4px)',
+                        boxShadow: '0 8px 30px rgba(0,0,0,0.4)',
+                        border: '1px solid rgba(255,255,255,0.2)',
+                    }
                 }}
             >
-                {/* Updated Tech Specs Badge */}
-                <Box
-                    sx={{
-                        position: 'absolute',
-                        top: 16,
-                        left: 16,
-                        zIndex: 2,
-                        display: 'flex',
-                        gap: 1,
-                        flexWrap: 'wrap',
-                        maxWidth: '70%'
-                    }}
-                >
-                    {product.specs?.map((spec, index) => (
-                        <Chip
-                            key={index}
-                            label={spec}
-                            size="small"
-                            onClick={(e) => e.stopPropagation()}
-                            sx={{
-                                background: theme => theme.palette.mode === 'dark'
-                                    ? 'rgba(255, 255, 255, 0.1)'
-                                    : 'rgba(0, 0, 0, 0.75)',
-                                color: theme => theme.palette.mode === 'dark'
-                                    ? '#ffffff'
-                                    : '#ffffff',
-                                fontSize: '0.75rem',
-                                height: '24px',
-                                borderRadius: '4px',
-                                '& .MuiChip-label': {
-                                    px: 1.5,
-                                    fontWeight: 500,
-                                },
-                                '&:hover': {
-                                    background: '#000000',
-                                }
-                            }}
-                        />
-                    ))}
-                </Box>
-
-                {/* Favorite Button - Updated */}
-                <IconButton 
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsFavorite(!isFavorite);
-                    }}
-                    sx={{ 
-                        position: 'absolute', 
-                        right: 16, 
-                        top: 16,
-                        zIndex: 2,
-                        background: 'rgba(255, 255, 255, 0.98)',
-                        backdropFilter: 'blur(10px)',
-                        width: 36,
-                        height: 36,
-                        boxShadow: '0 4px 12px rgba(0,0,0,0.12)',
-                        transition: 'all 0.2s ease',
-                        '&:hover': { 
-                            background: 'rgba(255, 255, 255, 1)',
-                            transform: 'scale(1.05)',
-                        }
-                    }}
-                >
-                    {isFavorite ? 
-                        <FavoriteIcon sx={{ color: '#f43f5e', fontSize: 20 }} /> : 
-                        <FavoriteBorderIcon sx={{ color: '#64748b', fontSize: 20 }} />
-                    }
-                </IconButton>
-
-                {/* Image Container - Updated */}
+                {/* Image Container */}
                 <Box sx={{ 
-                    position: 'relative', 
-                    pt: '85%',
-                    background: theme => theme.palette.mode === 'dark' 
-                        ? 'linear-gradient(145deg, #1a1c20, #2d3748, #1a1c20)'
-                        : 'linear-gradient(145deg, #ffffff, #f8f9fa, #ffffff)',
-                    overflow: 'hidden',
-                    '&::after': {
-                        content: '""',
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        bottom: 0,
-                        background: theme => theme.palette.mode === 'dark'
-                            ? 'linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.2) 100%)'
-                            : 'linear-gradient(180deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.2) 100%)',
-                        zIndex: 1
-                    }
+                    position: 'relative',
+                    height: 220,
+                    width: '100%',
+                    background: '#1A1F2E',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    borderBottom: '1px solid rgba(255,255,255,0.1)',
                 }}>
                     <CardMedia
                         component="img"
                         loading="lazy"
-                        image={product.imageUrl || generateDefaultSvg(product.category)}
+                        image={product.imageUrl || defaultImg}
                         alt={product.name}
                         sx={{ 
-                            position: 'absolute',
-                            top: 0,
-                            left: 0,
-                            width: '100%',
-                            height: '100%',
-                            objectFit: 'cover',
-                            transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                            transform: isHovered ? 'scale(1.05)' : 'none',
-                            filter: 'brightness(1.02) contrast(1.02)',
+                            width: '80%',
+                            height: '80%',
+                            objectFit: 'contain',
+                            filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.2))',
                         }}
                     />
+                    
+                    {/* Price Tag */}
+                    <Box
+                        sx={{
+                            position: 'absolute',
+                            top: 16,
+                            right: 16,
+                            background: 'rgba(0,0,0,0.9)',
+                            color: '#fff',
+                            borderRadius: '8px',
+                            padding: '8px 12px',
+                            fontWeight: 600,
+                            fontSize: '1rem',
+                            backdropFilter: 'blur(4px)',
+                            border: '1px solid rgba(255,255,255,0.2)',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                        }}
+                    >
+                        {formatPrice(product.price)}
+                    </Box>
                 </Box>
 
-                {/* Content Section - Updated styling for remaining sections */}
+                {/* Content */}
                 <CardContent sx={{ 
-                    flexGrow: 1, 
+                    flexGrow: 1,
                     p: 2.5,
-                    pb: 2,
+                    '&:last-child': { pb: 2 }
                 }}>
                     <Typography 
                         variant="h6" 
                         sx={{ 
                             fontSize: '1.1rem',
-                            fontWeight: 700,
-                            mb: 1.5,
-                            color: theme => theme.palette.mode === 'dark' 
-                                ? '#FFFFFF'
-                                : '#000000',
-                            lineHeight: 1.3,
+                            fontWeight: 600,
+                            mb: 1,
+                            color: '#FFFFFF',
                         }}
                     >
                         {product.name}
                     </Typography>
 
+                    {/* Brand */}
+                    <Typography 
+                        variant="body2" 
+                        sx={{ 
+                            mb: 2,
+                            color: 'rgba(255,255,255,0.7)',
+                            fontSize: '0.9rem',
+                        }}
+                    >
+                        {product.brand}
+                    </Typography>
+
+                    {/* Specs */}
                     <Box sx={{ 
-                        display: 'flex', 
-                        gap: 1, 
-                        mb: 2,
-                        flexWrap: 'wrap'
+                        display: 'flex',
+                        gap: 1,
+                        flexWrap: 'wrap',
+                        mb: 2
                     }}>
-                        {product.category && (
-                            <Chip 
-                                label={product.category} 
-                                size="small" 
-                                sx={{ 
-                                    background: theme => theme.palette.mode === 'dark' 
-                                        ? 'rgba(255, 255, 255, 0.15)'
-                                        : 'rgba(0, 0, 0, 0.15)',
-                                    color: theme => theme.palette.mode === 'dark' 
-                                        ? '#FFFFFF'
-                                        : '#000000',
-                                    borderRadius: '6px',
+                        {product.specs?.slice(0, 2).map((spec, index) => (
+                            <Chip
+                                key={index}
+                                label={spec}
+                                size="small"
+                                sx={{
+                                    fontSize: '0.75rem',
                                     height: '24px',
-                                    fontWeight: 600,
-                                    '& .MuiChip-label': {
-                                        textShadow: theme => theme.palette.mode === 'dark'
-                                            ? '0 1px 2px rgba(0,0,0,0.3)'
-                                            : 'none',
+                                    backgroundColor: 'rgba(255,255,255,0.1)',
+                                    color: '#FFFFFF',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255,255,255,0.15)',
                                     }
                                 }}
                             />
-                        )}
-                        {product.brand && (
-                            <Chip 
-                                label={product.brand} 
-                                size="small" 
-                                sx={{ 
-                                    borderRadius: 2,
-                                    background: 'linear-gradient(45deg, #8b5cf6, #6366f1)',
-                                    color: 'white',
-                                    fontWeight: 600,
-                                    textTransform: 'uppercase',
-                                    fontSize: '0.7rem',
-                                    letterSpacing: '0.5px'
-                                }}
-                            />
-                        )}
-                        {product.freeShipping && (
-                            <Chip 
-                                icon={<ShippingIcon sx={{ fontSize: 16, color: 'white' }} />}
-                                label="Free Shipping" 
-                                size="small"
-                                sx={{ 
-                                    borderRadius: 2,
-                                    background: 'linear-gradient(45deg, #14b8a6, #0d9488)',
-                                    color: 'white',
-                                    fontWeight: 600,
-                                    fontSize: '0.7rem'
-                                }}
-                            />
-                        )}
-                    </Box>
-
-                    {/* Price Section - Updated */}
-                    <Box sx={{ 
-                        mt: 'auto',
-                        pt: 2,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        borderTop: theme => `1px solid ${
-                            theme.palette.mode === 'dark' 
-                                ? 'rgba(255,255,255,0.05)'
-                                : 'rgba(0,0,0,0.05)'
-                        }`,
-                    }}>
-                        <Typography 
-                            variant="h6" 
-                            sx={{ 
-                                fontWeight: 700,
-                                color: theme => theme.palette.mode === 'dark' 
-                                    ? '#FFFFFF'
-                                    : '#000000',
-                                fontSize: '1.25rem',
-                                textShadow: theme => theme.palette.mode === 'dark'
-                                    ? '0 1px 2px rgba(0,0,0,0.3)'
-                                    : 'none',
-                            }}
-                        >
-                            {formatPrice(product.price)}
-                        </Typography>
-                        {product.originalPrice && (
-                            <Typography
-                                variant="body2"
-                                sx={{
-                                    textDecoration: 'line-through',
-                                    color: 'text.secondary',
-                                    fontSize: '0.875rem'
-                                }}
-                            >
-                                {formatPrice(product.originalPrice)}
-                            </Typography>
-                        )}
+                        ))}
                     </Box>
                 </CardContent>
 
-                {/* Action Buttons - Updated */}
-                <CardActions 
-                    onClick={(e) => e.stopPropagation()}
-                    sx={{ 
-                        p: 2.5,
-                        pt: 0,
-                        gap: 1.5,
-                    }}
-                >
+                {/* Actions */}
+                <CardActions sx={{ 
+                    p: 2.5,
+                    pt: 0,
+                    gap: 1.5
+                }}>
                     <Button 
                         variant="outlined"
+                        fullWidth
                         onClick={(e) => {
                             e.stopPropagation();
                             navigate(`/product/${product.id}`);
                         }}
                         sx={{
-                            flex: 1,
-                            py: 1.25,
                             borderRadius: '8px',
-                            borderWidth: '1px',
-                            borderColor: theme => theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
-                            backgroundColor: 'transparent',
-                            color: theme => theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
+                            textTransform: 'none',
                             fontWeight: 600,
-                            letterSpacing: '0.5px',
-                            transition: 'all 0.2s ease',
+                            borderColor: 'rgba(255,255,255,0.3)',
+                            color: '#FFFFFF',
                             '&:hover': {
-                                borderColor: theme => theme.palette.mode === 'dark' ? '#ffffff' : '#000000',
-                                backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                                borderColor: 'rgba(255,255,255,0.5)',
+                                backgroundColor: 'rgba(255,255,255,0.05)',
                             }
                         }}
                     >
@@ -526,32 +361,21 @@ const Card = React.memo(({ product }) => {
                     </Button>
                     <Button
                         variant="contained"
+                        fullWidth
                         startIcon={<CartIcon />}
                         onClick={handleAddToCart}
                         disabled={!product.available}
                         sx={{
-                            flex: 1,
-                            py: 1.25,
                             borderRadius: '8px',
-                            background: theme => theme.palette.mode === 'dark'
-                                ? 'linear-gradient(45deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%)'
-                                : 'linear-gradient(45deg, #000000 0%, #171717 50%, #404040 100%)',
-                            color: '#FFFFFF',
+                            textTransform: 'none',
                             fontWeight: 600,
-                            letterSpacing: '0.5px',
-                            transition: 'all 0.2s ease',
+                            backgroundColor: '#3B82F6',
                             '&:hover': {
-                                background: theme => theme.palette.mode === 'dark'
-                                    ? 'linear-gradient(45deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%)'
-                                    : 'linear-gradient(45deg, #171717 0%, #404040 50%, #737373 100%)',
-                                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.25)',
-                                transform: 'translateY(-1px)'
+                                backgroundColor: '#2563EB',
                             },
-                            '&:active': {
-                                transform: 'translateY(0px)'
-                            },
-                            '&:disabled': {
-                                background: 'rgba(0, 0, 0, 0.12)',
+                            '&.Mui-disabled': {
+                                backgroundColor: 'rgba(255,255,255,0.1)',
+                                color: 'rgba(255,255,255,0.3)',
                             }
                         }}
                     >
