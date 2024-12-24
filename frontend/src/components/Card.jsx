@@ -217,87 +217,71 @@ const Card = React.memo(({ product }) => {
                     position: 'relative',
                     cursor: 'pointer',
                     transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                    background: 'linear-gradient(169deg, rgba(30,41,59,0.95) 0%, rgba(15,23,42,0.95) 100%)',
-                    borderRadius: '16px',
+                    background: 'linear-gradient(165deg, rgba(30,30,30,0.95) 0%, rgba(15,15,15,0.97) 100%)',
+                    borderRadius: '20px',
                     overflow: 'hidden',
-                    border: '1px solid rgba(255,255,255,0.1)',
-                    backdropFilter: 'blur(10px)',
-                    boxShadow: `0 4px 20px rgba(0,0,0,0.4),
-                               inset 0 0 20px rgba(255,255,255,0.05)`,
+                    border: '1px solid rgba(255,255,255,0.07)',
+                    backdropFilter: 'blur(20px)',
+                    boxShadow: `0 10px 30px rgba(0,0,0,0.4),
+                               inset 0 0 20px rgba(255,255,255,0.03)`,
                     '&:hover': {
-                        transform: 'translateY(-8px) scale(1.02)',
+                        transform: 'translateY(-8px)',
                         boxShadow: `0 20px 40px rgba(0,0,0,0.5),
-                                   inset 0 0 30px rgba(255,255,255,0.07)`,
-                        '& .card-image': {
-                            transform: 'scale(1.1)',
+                                   inset 0 0 30px rgba(255,255,255,0.05)`,
+                        '& .product-image': {
+                            transform: 'scale(1.05)',
                         },
-                        '& .card-glow': {
-                            opacity: 1,
+                        '& .price-tag': {
+                            transform: 'translateY(-3px)',
+                            boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
                         }
                     }
                 }}
             >
-                {/* Glow Effect */}
-                <Box
-                    className="card-glow"
-                    sx={{
-                        position: 'absolute',
-                        top: 0,
-                        left: 0,
-                        right: 0,
-                        height: '100%',
-                        background: 'radial-gradient(circle at 50% 0%, rgba(56,189,248,0.15), transparent 70%)',
-                        opacity: 0,
-                        transition: 'opacity 0.4s ease',
-                        pointerEvents: 'none',
-                        zIndex: 1
-                    }}
-                />
-
                 {/* Image Container */}
                 <Box sx={{ 
                     position: 'relative',
-                    height: 240,
-                    width: '100%',
-                    background: 'linear-gradient(135deg, #1E293B 0%, #0F172A 100%)',
-                    overflow: 'hidden',
-                    borderBottom: '1px solid rgba(255,255,255,0.1)',
+                    height: 220,
+                    background: 'linear-gradient(135deg, rgba(25,25,25,0.97) 0%, rgba(18,18,18,0.98) 100%)',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
+                    overflow: 'hidden',
+                    borderBottom: '1px solid rgba(255,255,255,0.05)',
                 }}>
                     <CardMedia
                         component="img"
                         loading="lazy"
                         image={product.imageUrl || defaultImg}
                         alt={product.name}
-                        className="card-image"
+                        className="product-image"
                         sx={{ 
-                            height: '70%',
-                            width: '90%',
+                            height: '75%',
+                            width: '85%',
                             objectFit: 'contain',
-                            padding: '1.5rem',
                             transition: 'transform 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                            filter: 'drop-shadow(0 8px 16px rgba(0,0,0,0.3))',
+                            filter: 'drop-shadow(0 10px 20px rgba(0,0,0,0.25))',
                         }}
                     />
                     
                     {/* Price Tag */}
                     <Box
+                        className="price-tag"
                         sx={{
                             position: 'absolute',
                             top: 16,
                             right: 16,
-                            background: 'rgba(15,23,42,0.95)',
+                            background: 'rgba(10,10,10,0.95)',
                             color: '#fff',
                             borderRadius: '12px',
-                            padding: '8px 16px',
+                            padding: '10px 16px',
                             fontWeight: 600,
                             fontSize: '1.1rem',
-                            backdropFilter: 'blur(8px)',
+                            letterSpacing: '0.5px',
+                            backdropFilter: 'blur(10px)',
                             border: '1px solid rgba(255,255,255,0.1)',
-                            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                            zIndex: 2,
+                            boxShadow: '0 8px 20px rgba(0,0,0,0.2)',
+                            transition: 'all 0.3s ease',
                         }}
                     >
                         {formatPrice(product.price)}
@@ -308,23 +292,21 @@ const Card = React.memo(({ product }) => {
                 <CardContent sx={{ 
                     flexGrow: 1,
                     p: 2.5,
-                    position: 'relative',
-                    zIndex: 2,
                 }}>
                     <Typography 
                         variant="h6" 
                         sx={{ 
-                            fontSize: '1.2rem',
+                            fontSize: '1.25rem',
                             fontWeight: 600,
                             mb: 1,
                             color: '#FFFFFF',
-                            textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                            letterSpacing: '0.3px',
                         }}
                     >
                         {product.name}
                     </Typography>
 
-                    {/* Brand with Icon */}
+                    {/* Brand */}
                     <Box sx={{
                         display: 'flex',
                         alignItems: 'center',
@@ -344,7 +326,8 @@ const Card = React.memo(({ product }) => {
                             variant="body2" 
                             sx={{ 
                                 color: 'rgba(255,255,255,0.7)',
-                                fontSize: '0.9rem',
+                                fontSize: '0.95rem',
+                                letterSpacing: '0.3px',
                             }}
                         >
                             {product.brand}
@@ -364,15 +347,15 @@ const Card = React.memo(({ product }) => {
                                 label={spec}
                                 size="small"
                                 sx={{
-                                    fontSize: '0.75rem',
-                                    height: '26px',
-                                    backgroundColor: 'rgba(59,130,246,0.1)',
-                                    color: '#60A5FA',
-                                    border: '1px solid rgba(59,130,246,0.2)',
+                                    fontSize: '0.8rem',
+                                    height: '28px',
+                                    backgroundColor: 'rgba(255,255,255,0.04)',
+                                    color: 'rgba(255,255,255,0.7)',
+                                    border: '1px solid rgba(255,255,255,0.05)',
                                     transition: 'all 0.3s ease',
                                     '&:hover': {
-                                        backgroundColor: 'rgba(59,130,246,0.2)',
-                                        border: '1px solid rgba(59,130,246,0.3)',
+                                        backgroundColor: 'rgba(255,255,255,0.07)',
+                                        borderColor: 'rgba(255,255,255,0.1)',
                                     }
                                 }}
                             />
@@ -385,8 +368,6 @@ const Card = React.memo(({ product }) => {
                     p: 2.5,
                     pt: 0,
                     gap: 1.5,
-                    position: 'relative',
-                    zIndex: 2,
                 }}>
                     <Button 
                         variant="outlined"
@@ -396,16 +377,17 @@ const Card = React.memo(({ product }) => {
                             navigate(`/product/${product.id}`);
                         }}
                         sx={{
-                            borderRadius: '10px',
+                            borderRadius: '12px',
                             textTransform: 'none',
+                            fontSize: '0.95rem',
                             fontWeight: 600,
-                            borderColor: 'rgba(59,130,246,0.3)',
-                            color: '#60A5FA',
+                            borderColor: 'rgba(255,255,255,0.08)',
+                            color: 'rgba(255,255,255,0.85)',
+                            letterSpacing: '0.3px',
                             transition: 'all 0.3s ease',
                             '&:hover': {
-                                borderColor: 'rgba(59,130,246,0.5)',
-                                backgroundColor: 'rgba(59,130,246,0.1)',
-                                transform: 'translateY(-2px)',
+                                borderColor: 'rgba(255,255,255,0.15)',
+                                backgroundColor: 'rgba(255,255,255,0.05)',
                             }
                         }}
                     >
@@ -418,16 +400,17 @@ const Card = React.memo(({ product }) => {
                         onClick={handleAddToCart}
                         disabled={!product.available}
                         sx={{
-                            borderRadius: '10px',
+                            borderRadius: '12px',
                             textTransform: 'none',
+                            fontSize: '0.95rem',
                             fontWeight: 600,
+                            letterSpacing: '0.3px',
                             background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
-                            boxShadow: '0 4px 12px rgba(59,130,246,0.3)',
+                            boxShadow: '0 8px 20px rgba(37,99,235,0.3)',
                             transition: 'all 0.3s ease',
                             '&:hover': {
                                 background: 'linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%)',
-                                transform: 'translateY(-2px)',
-                                boxShadow: '0 8px 16px rgba(59,130,246,0.4)',
+                                boxShadow: '0 12px 25px rgba(37,99,235,0.4)',
                             },
                             '&.Mui-disabled': {
                                 background: 'rgba(255,255,255,0.1)',
